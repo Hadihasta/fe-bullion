@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -20,7 +20,6 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 } */
-
 
 /* style  from shadcn :: Start */
 :root {
@@ -103,10 +102,10 @@ body {
 /* style  from shadcn :: End */
 
 @theme inline {
-/* colors  from shadcn */
+  /* colors  from shadcn */
   --color-primaryOrange: #fd5725;
   --color-white: #ffffff;
-  --color-borderDefault: #E0E0E0;
+  --color-borderDefault: #e0e0e0;
   --color-borderFocus: #000000;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -147,14 +146,26 @@ body {
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-
   /* --color-background: var(--background);
   --color-foreground: var(--foreground); */
 
   /* font */
   --font-montserrat: 'Montserrat', sans-serif;
+}
 
-  
+@theme {
+  --animate-fade-in: fade-in 1s ease-out forwards;
+ 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 }
 
 body {
@@ -216,6 +227,12 @@ body {
 .input_label {
   font-weight: 700;
   font-size: 14px;
+}
+
+.warning_label {
+  font-size: 12px;
+  color: red;
+  font-weight: 500;
 }
 
 /* Base style :: End  */
