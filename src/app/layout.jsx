@@ -1,5 +1,6 @@
 import { Montserrat } from 'next/font/google'
 import '@/styles/globals.css'
+import { Toaster } from "@/components/ui/sonner"
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
         `}
       >
         {children}
+        <Toaster/>
       </body>
     </html>
   )
