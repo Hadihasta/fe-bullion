@@ -154,11 +154,13 @@ const LoginForm = () => {
         type="text"
         value={email}
       />
-      {/* key agar retrigger css animation saat re-render  */}
-      <div key={`${state.emailRequired}-${state.email}`} className="warning_label  animate-fade-in">
-        <div className="mt-2 ">{state.emailRequired && getErrorMessage('email_required')}</div>
-        <div className="mt-2 ">{state.email && getErrorMessage('email')}</div>
-      </div>
+      {/* ini buka re render tapi re create element ini sehingga elementnya mempunyai css yang fresh*/}
+      {/* sangat optimal karena jika tidak triger state change maka tidak perlu animasi lagi */}
+
+      {state.emailRequired && (
+        <div className="warning_label animate-fade-in mt-2">{getErrorMessage('email_required')}</div>
+      )}
+      {state.email && <div className="warning_label animate-fade-in mt-2">{getErrorMessage('email')}</div>}
       {/* ○ Required
         ○ Minimal character 8 */}
       <h3 className="input_label mt-3">{`Password`}</h3>
@@ -169,11 +171,12 @@ const LoginForm = () => {
         type="password"
         value={password}
       />
-      
-      <div key={`${state.passwordRequired}-${state.password}`}  className="warning_label animate-fade-in">
-        <div className="mt-2">{state.passwordRequired && getErrorMessage('password_required')}</div>
-        <div className="mt-2">{state.password && getErrorMessage('password')}</div>
-      </div>
+
+      {state.passwordRequired && (
+        <div className="warning_label animate-fade-in mt-2">{getErrorMessage('password_required')}</div>
+      )}
+      {state.password && <div className="warning_label animate-fade-in mt-2">{getErrorMessage('password')}</div>}
+
       <ButtonStyled
         className="mt-5"
         label="Masuk"
