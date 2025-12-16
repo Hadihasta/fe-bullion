@@ -28,6 +28,8 @@ body {
   /* colors */
   --color-primaryOrange: #fd5725;
   --color-white: #ffffff;
+  --color-borderDefault: #E0E0E0;
+  --color-borderFocus: #000000;
 }
 
 body {
@@ -35,7 +37,7 @@ body {
 }
 
 /* Base style :: Start  */
-  /* Layout */
+/* Layout */
 
 .flex-col {
   display: flex;
@@ -47,16 +49,48 @@ body {
   flex-direction: row;
 }
 
-.vw-40{
+.flex-row-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+
+/* width */
+.vw-40 {
   width: 40vw;
 }
 
-.vw-60{
+.vw-60 {
   width: 60vw;
 }
 
-.p-60{
+/* Border radius default*/
+
+/* rounded-xs    0.125rem (2px) */
+/* rounded-sm   0.25rem (4px) */
+/* rounded-md (6px) */
+/*  rounded-lg (8px) */
+/*  rounded-xl 0.75rem (12px) */
+/*  rounded-2xl (16px) */
+/*  rounded-3xl  1.5rem (24px) */
+/*  rounded-4xl  2rem (32px) */
+
+/* padding */
+
+.p-60 {
   padding: 60px;
+}
+
+/* Label  */
+.page_label {
+  font-weight: 700;
+  font-size: 32px;
+}
+
+.input_label {
+  font-weight: 700;
+  font-size: 14px;
 }
 
 /* Base style :: End  */
