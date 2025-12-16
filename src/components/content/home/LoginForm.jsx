@@ -2,15 +2,17 @@
 import { useState, useReducer, useEffectEvent } from 'react'
 import StyledInput from '@/components/form/StyledInput'
 import ButtonStyled from '@/components/global/ButtonStyled'
-import { toast } from 'sonner'
-import { emailHelper, minLength, checkEmpty } from '@/lib/helper'
-import { cn } from '@/lib/utils'
+import { emailHelper, minLength, checkEmpty, hashSHA256 } from '@/lib/helper'
+import { fetchlogin } from '@/services/authServices'
+import { ToasterNotif } from '@/components/global/ToasterNotif'
 
 // form login admin Email & Password
 
 const LoginForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [isDisabled, setIsDisabled] = useState(true)
 
   // initial state useReducer
 
@@ -59,12 +61,12 @@ const LoginForm = () => {
     email: false,
     passwordRequired: false,
     password: false,
-    disabled : false
   })
 
   //check email and password kosong  trigger setiap onchange input
   const onInputedValue = useEffectEvent((value, field) => {
-       dispatch({ type: 'disable_validator', nextDisabled: false })
+    // trigger button could press if any changes in password and email
+    setIsDisabled(false)
     // check email empty string ?
     switch (field) {
       case 'email':
@@ -145,18 +147,55 @@ const LoginForm = () => {
     }
   }
 
-  const handleSubmit = () => {
-    // check validation all false atau tidak  
-    const hasFalse = Object.values(state).some(value => value === true) 
-    if(hasFalse){ 
-        dispatch({ type: 'disable_validator', nextDisabled: true })
-        return
-    }else {
-        dispatch({ type: 'disable_validator', nextDisabled: false })
+  const validateSubmit = () => {
+    const emailEmpty = checkEmpty(email)
+    const emailInvalid = !emailHelper(email)
+    const passwordEmpty = checkEmpty(password)
+    const passwordInvalid = !minLength(password, 8)
+    // jika email empty true
+    if (emailEmpty) {
+      dispatch({ type: 'email_required', nextEmailRequired: true })
+    }
+    // jika email tidak berformat email dan email empty false
+    if (emailInvalid && !emailEmpty) {
+      dispatch({ type: 'email_checker', nextEmail: true })
+    }
+    // jika password empty true
+    if (passwordEmpty) {
+      dispatch({ type: 'passsword_required', nextPasswordRequired: true })
+    }
+    // jika password tidak lebih dari 8 dan password empty false
+    if (passwordInvalid && !passwordEmpty) {
+      dispatch({ type: 'password_checker', nextPassword: true })
     }
 
-    console.log('masuuukk')
-    // toast("Event has been created.")
+    // kalau salah satu ada yang true akan true
+    return emailEmpty || emailInvalid || passwordEmpty || passwordInvalid
+  }
+
+  const handleSubmit = async () => {
+    try {
+      //  toast("Event has been created.")
+      const hasError = validateSubmit()
+      if (hasError) return
+
+      setLoading(true)
+
+      setTimeout(() => {
+        const payload = {
+          email,
+          password: hashSHA256(password),
+        }
+
+        // const res = fetchlogin(payload)
+        // console.log(res)
+        ToasterNotif('succes', `${'Successfully Logged In!'} `, '#22c55e')
+        setLoading(false)
+      }, 1000)
+    } catch (error) {
+      ToasterNotif('error', `${'Something Goes Wrong...'} `, '#ef4444')
+      // console.log(error)
+    }
   }
 
   return (
@@ -171,9 +210,6 @@ const LoginForm = () => {
         type="text"
         value={email}
       />
-      {/* ini buka re render tapi re create element ini sehingga elementnya mempunyai css yang fresh*/}
-      {/* sangat optimal karena jika tidak triger state change maka tidak perlu animasi lagi */}
-
       {state.emailRequired && (
         <div className="warning_label animate-fade-in mt-2">{getErrorMessage('email_required')}</div>
       )}
@@ -198,8 +234,8 @@ const LoginForm = () => {
         className="mt-5"
         label="Masuk"
         onClick={handleSubmit}
-        disableStatus={state.disabled}
-        loading={true}
+        disableStatus={isDisabled}
+        loading={loading}
       />
     </>
   )
