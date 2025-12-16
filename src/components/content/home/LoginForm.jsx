@@ -44,6 +44,12 @@ const LoginForm = () => {
           password: action.nextPassword,
         }
       }
+      case 'disable_validator': {
+        return {
+          ...state,
+          disabled: action.nextDisabled,
+        }
+      }
     }
     throw Error('Unknown action.')
   }
@@ -53,10 +59,12 @@ const LoginForm = () => {
     email: false,
     passwordRequired: false,
     password: false,
+    disabled : false
   })
 
   //check email and password kosong  trigger setiap onchange input
   const onInputedValue = useEffectEvent((value, field) => {
+       dispatch({ type: 'disable_validator', nextDisabled: false })
     // check email empty string ?
     switch (field) {
       case 'email':
@@ -138,6 +146,15 @@ const LoginForm = () => {
   }
 
   const handleSubmit = () => {
+    // check validation all false atau tidak  
+    const hasFalse = Object.values(state).some(value => value === true) 
+    if(hasFalse){ 
+        dispatch({ type: 'disable_validator', nextDisabled: true })
+        return
+    }else {
+        dispatch({ type: 'disable_validator', nextDisabled: false })
+    }
+
     console.log('masuuukk')
     // toast("Event has been created.")
   }
@@ -181,6 +198,8 @@ const LoginForm = () => {
         className="mt-5"
         label="Masuk"
         onClick={handleSubmit}
+        disableStatus={state.disabled}
+        loading={true}
       />
     </>
   )
