@@ -1,4 +1,6 @@
 import { Montserrat } from 'next/font/google'
+import { SidebarProvider } from '@/components/ui/sidebar'
+import SidebarApp from '@/components/global/SidebarApp'
 import '@/styles/globals.css'
 
 const montserrat = Montserrat({
@@ -11,6 +13,8 @@ const montserrat = Montserrat({
 export default function RootLayout({ children }) {
   return (
     <>
+    <SidebarProvider defaultOpen={false}>
+        <SidebarApp />
       <main
         className={`
           ${montserrat.variable}
@@ -19,6 +23,7 @@ export default function RootLayout({ children }) {
       >
         {children}
       </main>
+      </SidebarProvider>
     </>
   )
 }

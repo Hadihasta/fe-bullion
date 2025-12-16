@@ -1,8 +1,12 @@
 import React from 'react'
+import { SidebarTriggerOut } from '@/components/ui/sidebar'
 
 const page = () => {
   return (
-    <div>page</div>
+    <div>
+      <SidebarTriggerOut/>
+      page
+    </div>
   )
 }
 
