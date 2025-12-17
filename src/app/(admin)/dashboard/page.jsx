@@ -19,10 +19,10 @@ const ITEMS_PER_PAGE = 5
     const masterUsers = async () => {
       setLoading(true)
       try {
-        // ⬇️ nanti tinggal kirim page & limit ke API
+    
         const res = await fetchTableUser({ page, limit: ITEMS_PER_PAGE })
-
-        // 🔧 sesuaikan dengan response API kamu
+        console.log(res)
+    
         if (res?.data?.length) {
           setUsers(res.data)
           setTotalPage(res.meta?.total_page ?? 5)
