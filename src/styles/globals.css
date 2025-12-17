@@ -149,6 +149,7 @@ body {
   --color-borderDefault: #e0e0e0;
   --color-borderFocus: #000000;
   --color-grayDisable: #b2b2b2;
+  --color-backgroundGray: #F1F3FC;
 
   /* --color-background: var(--background);
   --color-foreground: var(--foreground); */

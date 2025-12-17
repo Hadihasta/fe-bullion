@@ -1,4 +1,6 @@
 import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react'
+import { SidebarTriggerOut } from '@/components/ui/sidebar'
+import NextImage from './NextImage'
 
 import {
   Sidebar,
@@ -10,6 +12,22 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+
+
+
+const logoWaterMark = './asset/logo/logo-bei-color.svg'
+  
+
+  const ImageRender = [
+    {
+      src: logoWaterMark,
+      className: '',
+      width: 104,
+      height: 32,
+      alt: 'Bullion Logo',
+    },
+  ]
+
 
 const items = [
   {
@@ -45,8 +63,18 @@ const SidebarApp = () => {
       <SidebarContent>
         <SidebarGroup className='px-5 '>
           <div className="flex justify-between items-center">
-               {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
-            <div className='font-bold text-primaryOrange'>PAYLINE APP</div>
+        {ImageRender.map((value, index) => (
+          <NextImage
+            key={index}
+            src={value.src}
+            className={value.className}
+            alt={value.alt}
+            width={value.width}
+            height={value.height}
+          />
+        ))}
+
+            <SidebarTriggerOut/>
           </div>
        
           <SidebarGroupContent>

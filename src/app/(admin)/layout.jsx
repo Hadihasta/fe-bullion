@@ -1,6 +1,6 @@
 import { Montserrat } from 'next/font/google'
 import { SidebarProvider } from '@/components/ui/sidebar'
-import SidebarApp from '@/components/global/SidebarApp'
+import SidebarLayout from '@/components/layout/SidebarLayout'
 import '@/styles/globals.css'
 
 const montserrat = Montserrat({
@@ -9,21 +9,14 @@ const montserrat = Montserrat({
   weight: ['300', '400', '500', '600', '700'],
 })
 
-
 export default function RootLayout({ children }) {
   return (
-    <>
-    <SidebarProvider defaultOpen={false}>
-        <SidebarApp />
-      <main
-        className={`
-          ${montserrat.variable}
-          antialiased
-        `}
-      >
-        {children}
-      </main>
-      </SidebarProvider>
-    </>
+    <SidebarProvider defaultOpen>
+      <html lang="en">
+        <body className={`${montserrat.variable} antialiased bg-backgroundGray`}>
+          <SidebarLayout>{children}</SidebarLayout>
+        </body>
+      </html>
+    </SidebarProvider>
   )
 }

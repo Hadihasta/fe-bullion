@@ -4,8 +4,11 @@ import { SidebarTriggerOut } from '@/components/ui/sidebar'
 const page = () => {
   return (
     <div>
-      <SidebarTriggerOut/>
-      page
+      <div className=''>
+        page owowwowo
+        digdsadasds
+      {/* <SidebarTriggerOut/> */}
+      </div>
     </div>
   )
 }
