@@ -4,6 +4,8 @@ import StyledInput from '@/components/form/StyledInput'
 import ButtonStyled from '@/components/global/ButtonStyled'
 import StyledCalender from '@/components/form/StyledCalender'
 import StyledDropDown from '@/components/form/StyledDropDown'
+import StyledInputPassword from '@/components/form/StyledInputPassword'
+import { StyledUploudPhoto } from '@/components/form/StyledUploudPhoto'
 
 const RegisterForm = () => {
   const handleTambah = () => {
@@ -52,13 +54,49 @@ const RegisterForm = () => {
         </div>
       </div>
 
-      {/* up here batas  */}
-
-      <h3 className="input_label mt-3">{`Password`}</h3>
+      <h3 className="input_label mt-3">{`Email`}</h3>
       <StyledInput
         className="mt-3"
-        placeholder="Masukan password"
+        placeholder="Masukan Email"
       />
+
+      <h3 className="input_label mt-3">{`No. Handphone`}</h3>
+      <StyledInput
+        className="mt-3"
+        placeholder="Masukkan no handphone"
+      />
+
+      <h3 className="input_label mt-3">{`Alamat`}</h3>
+      <StyledInput
+        className="mt-3"
+        placeholder="Masukkan Alamat"
+      />
+
+      <div
+        id="password"
+        className="flex gap-4 mt-3"
+      >
+        <div className="w-full">
+          <h3 className="input_label">{`Password`}</h3>
+          <div className="mt-3">
+            <StyledInputPassword />
+          </div>
+        </div>
+
+        <div className="w-full">
+          <h3 className="input_label">{`Konfirmasi Password`}</h3>
+          <div className="mt-3">
+            <StyledInputPassword />
+          </div>
+        </div>
+      </div>
+
+      <h3 className="input_label mt-3">{`Foto Profil`}</h3>
+      <div className='mt-3'>
+        <StyledUploudPhoto  className="mt-3"/>
+      </div>
+
+   
 
       <ButtonStyled
         className="mt-5 bg-primaryBlue!"
