@@ -10,11 +10,43 @@ const RegisterForm = () => {
 
   return (
     <>
-      <h3 className="input_label">{`Email`}</h3>
-      <StyledInput
-        className="mt-3"
-        placeholder="Masukan email"
-      />
+      <div id="name_group" className='flex gap-4'>
+        <div className='w-full'>
+          <h3 className="input_label">{`Nama Depan`}</h3>
+          <StyledInput
+            className="mt-3"
+            placeholder="Nama Depan"
+          />
+        </div>
+
+        <div className='w-full'>
+          <h3 className="input_label">{`Nama Belakang`}</h3>
+          <StyledInput
+            className="mt-3"
+            placeholder="Nama Belakang"
+          />
+        </div>
+      </div>
+
+       <div id="jenis_bod" className='flex gap-4 mt-3'>
+        <div className='w-full'>
+          <h3 className="input_label">{`Jenis Kelamin`}</h3>
+          <StyledInput
+            className="mt-3"
+            placeholder="Nama Depan"
+          />
+        </div>
+
+        <div className='w-full'>
+          <h3 className="input_label">{`Tanggal Lahir`}</h3>
+          <StyledInput
+            className="mt-3"
+            placeholder="Nama Belakang"
+          />
+        </div>
+      </div>
+
+
 
       <h3 className="input_label mt-3">{`Password`}</h3>
       <StyledInput
