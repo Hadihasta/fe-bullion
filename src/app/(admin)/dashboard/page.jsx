@@ -3,12 +3,9 @@ import { SidebarTriggerOut } from '@/components/ui/sidebar'
 
 const page = () => {
   return (
-    <div>
-      <div className=''>
-        page owowwowo
-        digdsadasds
+    <div className="flex bg-backgroundGray grow">
+      testesdsadasdasdsa
       {/* <SidebarTriggerOut/> */}
-      </div>
     </div>
   )
 }

@@ -5,6 +5,7 @@ import ButtonStyled from '@/components/global/ButtonStyled'
 import { emailHelper, minLength, checkEmpty, hashSHA256 } from '@/lib/helper'
 import { fetchlogin } from '@/services/authServices'
 import { ToasterNotif } from '@/components/global/ToasterNotif'
+import { useRouter } from "next/navigation"
 
 // form login admin Email & Password
 
@@ -13,6 +14,10 @@ const LoginForm = () => {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [isDisabled, setIsDisabled] = useState(true)
+
+
+  const router = useRouter()
+
 
   // initial state useReducer
 
@@ -175,26 +180,49 @@ const LoginForm = () => {
 
   const handleSubmit = async () => {
     try {
-      //  toast("Event has been created.")
+      
       const hasError = validateSubmit()
       if (hasError) return
 
       setLoading(true)
+      setIsDisabled(true)
+      const payload = {
+        email,
+        password: hashSHA256(password),
+      }
+      const res = await fetchlogin(payload)
 
-      setTimeout(() => {
-        const payload = {
-          email,
-          password: hashSHA256(password),
-        }
+      if(res.status === 200) { 
+       const token = res.data?.token
 
-        // const res = fetchlogin(payload)
-        // console.log(res)
-        ToasterNotif('succes', `${'Successfully Logged In!'} `, '#22c55e')
-        setLoading(false)
-      }, 1000)
+      if (token) {
+        localStorage.setItem("token", token)
+      }
+
+
+      ToasterNotif('succes', `${res.message === '' ? 'Successfully Logged In!' : res.message} `, '#22c55e')
+      setLoading(false)
+      setIsDisabled(false)
+
+      router.push('/dashboard')
+      }
+      
+      // console.log(res.data)
+
     } catch (error) {
-      ToasterNotif('error', `${'Something Goes Wrong...'} `, '#ef4444')
-      // console.log(error)
+      setIsDisabled(false)
+      setLoading(false)
+      if (error.response.status === 400) {
+        // console.log(errorMessage)
+        const errorMessage = error.response.data.err_message
+        ToasterNotif(
+          'error',
+          `${errorMessage === '' ? 'Something Goes Wrong...' : error.response.data.err_message}`,
+          '#ef4444'
+        )
+      } else {
+        ToasterNotif('error', `${'Something Goes Wrong...'}`, '#ef4444')
+      }
     }
   }
 
