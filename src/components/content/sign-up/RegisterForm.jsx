@@ -3,6 +3,7 @@ import React from 'react'
 import StyledInput from '@/components/form/StyledInput'
 import ButtonStyled from '@/components/global/ButtonStyled'
 import StyledCalender from '@/components/form/StyledCalender'
+import StyledDropDown from '@/components/form/StyledDropDown'
 
 const RegisterForm = () => {
   const handleTambah = () => {
@@ -38,19 +39,20 @@ const RegisterForm = () => {
       >
         <div className="w-full">
           <h3 className="input_label">{`Jenis Kelamin`}</h3>
-          <StyledInput
-            className="mt-3"
-            placeholder="Nama Depan"
-          />
+          <div className="mt-3">
+            <StyledDropDown />
+          </div>
         </div>
 
         <div className="w-full">
           <h3 className="input_label">{`Tanggal Lahir`}</h3>
-          <div className='mt-3'>
-          <StyledCalender />
-          </div > 
+          <div className="mt-3">
+            <StyledCalender />
+          </div>
         </div>
       </div>
+
+      {/* up here batas  */}
 
       <h3 className="input_label mt-3">{`Password`}</h3>
       <StyledInput
