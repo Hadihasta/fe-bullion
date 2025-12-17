@@ -7,7 +7,7 @@ import { Spinner } from "@/components/ui/spinner"
 // disable status
 // loading
 
-const ButtonStyled = ({ label, onClick, className , disableStatus ,loading}) => {
+const ButtonStyled = ({ label, onClick, className, disableStatus ,loading}) => {
   const defaultStyle =
     ' flex justify-center gap-[5px] justify w-full rounded-lg font-bold text-white p-2  transition-colors duration-200  text-sm '
 

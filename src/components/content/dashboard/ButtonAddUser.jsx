@@ -1,9 +1,12 @@
 'use client'
 import React from 'react'
+import { useRouter } from 'next/navigation'
 
 const ButtonAddUser = () => {
+  const router = useRouter()
+
   const handleInput = () => {
-    console.log('masukk')
+    router.push('/sign-up')
   }
 
   return (

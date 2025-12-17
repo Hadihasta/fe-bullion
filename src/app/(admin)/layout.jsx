@@ -1,7 +1,5 @@
 import { Montserrat } from 'next/font/google'
 import { SidebarProvider } from '@/components/ui/sidebar'
-import { useSidebar, SidebarTriggerOut } from '@/components/ui/sidebar'
-import SidebarApp from '@/components/global/SidebarApp'
 import SidebarLayout from '@/components/layout/SidebarLayout'
 import '@/styles/globals.css'
 
