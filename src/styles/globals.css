@@ -190,10 +190,22 @@ body {
   flex-direction: row;
 }
 
+.flex-start {
+    display: flex;
+    align-items: center;
+}
+
 .flex-row-center {
   display: flex;
   flex-direction: column;
   justify-content: start;
+  align-items: center;
+}
+
+.flex-row-middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 
@@ -205,6 +217,9 @@ body {
 .vw-60 {
   width: 60vw;
 }
+
+/* height */
+
 
 /* Border radius default*/
 
