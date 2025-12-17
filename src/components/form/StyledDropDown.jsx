@@ -3,21 +3,14 @@ import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
 import NextImage from '../global/NextImage'
 
-const StyledDropDown = () => {
+const StyledDropDown = ({onChange}) => {
   const [selected, setSelected] = React.useState(undefined)
 
   return (
@@ -43,11 +36,11 @@ const StyledDropDown = () => {
         align="start"
       >
         <div className="font-semibold">
-          <button className='w-full' onClick={() => setSelected('Laki - Laki')}>
+          <button className='w-full' onClick={() =>{ onChange('male'), setSelected('Laki - Laki')}}>
             <DropdownMenuItem >Laki - Laki</DropdownMenuItem>
           </button>
           <DropdownMenuSeparator />
-          <button className='w-full' onClick={() => setSelected('Perempuan')}>
+          <button className='w-full' onClick={() => { onChange('female'), setSelected('Perempuan')}}>
           <DropdownMenuItem>Perempuan</DropdownMenuItem>
           </button>
         </div>

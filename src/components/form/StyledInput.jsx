@@ -1,11 +1,6 @@
 import clsx from 'clsx'
 
 
-const handleInput = (e) => { 
-    console.log('babw', e)
-}
-
-
 const StyledInput = ({className, ...rest}) => {
   return (
     <input

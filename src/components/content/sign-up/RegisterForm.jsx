@@ -101,26 +101,34 @@ const RegisterForm = () => {
   }
 
   const handleTambah = () => {
+    // kalau ada eror jangan lakukan apa apa
     // if (validateSubmit()) return
 
     setLoading(true)
 
-    // console.log('REGISTER PAYLOAD:', values)
+    console.log('REGISTER PAYLOAD:', values)
     // console.log('REGISTER PAYLOAD:', state)
-    handleFormData()
 
+    // send to form handler later
+    // handleFormData()
     setLoading(false)
   }
 
-  const handleFormData = () => { 
-     const formData = new FormData();
+  const handleFormData = () => {
+    const formData = new FormData()
 
-      formData.append("first_name", values.first_name);
-      formData.append("last_name", values.last_name);
+    formData.append('first_name', values.first_name)
+    formData.append('last_name', values.last_name)
+    formData.append('gender', values.gender)
+    formData.append('date_of_birth', values.date_of_birth)
+    formData.append('email', values.email)
+    formData.append('phone', values.phone)
+    formData.append('address', values.address)
+    formData.append('password', values.password)
+    formData.append('photo', values.photo)
 
     const obj = Object.fromEntries(formData.entries())
-     console.log(obj)
- 
+    console.log(obj)
   }
 
   return (
@@ -137,7 +145,9 @@ const RegisterForm = () => {
             value={values.firstName}
             onChange={(e) => handleInput('first_name', e.target.value)}
           />
-          {touched.first_name && errors.first_name && <div className="warning_label animate-fade-in mt-2">{errors.first_name}</div>}
+          {touched.first_name && errors.first_name && (
+            <div className="warning_label animate-fade-in mt-2">{errors.first_name}</div>
+          )}
         </div>
 
         <div className="w-full">
@@ -148,10 +158,13 @@ const RegisterForm = () => {
             value={values.lastName}
             onChange={(e) => handleInput('last_name', e.target.value)}
           />
-           {touched.last_name && errors.last_name && <div className="warning_label animate-fade-in mt-2">{errors.last_name}</div>}
+          {touched.last_name && errors.last_name && (
+            <div className="warning_label animate-fade-in mt-2">{errors.last_name}</div>
+          )}
         </div>
       </div>
 
+      {/* handle here */}
       <div
         id="jenis_bod"
         className="flex gap-4 mt-3"
@@ -159,7 +172,8 @@ const RegisterForm = () => {
         <div className="w-full">
           <h3 className="input_label">{`Jenis Kelamin`}</h3>
           <div className="mt-3">
-            <StyledDropDown />
+            <StyledDropDown 
+              onChange={(val) => handleInput('gender', val)} />
           </div>
         </div>
 
