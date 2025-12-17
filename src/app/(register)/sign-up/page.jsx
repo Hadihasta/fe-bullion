@@ -23,8 +23,8 @@ export default function page() {
   ]
 
   return (
-    <main className=" min-h-screen  flex-row">
-      <div className="bg-primaryBlue vw-40 relative p-60 ">
+    <main className=" min-h-screen  justify-center flex-row">
+      <div className="bg-primaryBlue vw-40 relative p-60 hidden md:block ">
         {ImageRender.map((value, index) => (
           <NextImage
             key={index}
@@ -36,7 +36,7 @@ export default function page() {
           />
         ))}
       </div>
-      <div className="bg-white vw-60 flex-row-center p-60">
+      <div className="bg-white  vw-100 md:vw-60  flex-row-center p-60">
         <div className=' lg:min-w-101.25  min-w-50'>
           <div>
             <h1 className='page_label pb-8 whitespace-nowrap'>
