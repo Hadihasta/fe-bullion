@@ -5,7 +5,7 @@ import ButtonStyled from '@/components/global/ButtonStyled'
 import { emailHelper, minLength, checkEmpty, hashSHA256 } from '@/lib/helper'
 import { fetchlogin } from '@/services/authServices'
 import { ToasterNotif } from '@/components/global/ToasterNotif'
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 
 // form login admin Email & Password
 
@@ -15,9 +15,7 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false)
   const [isDisabled, setIsDisabled] = useState(true)
 
-
   const router = useRouter()
-
 
   // initial state useReducer
 
@@ -180,7 +178,6 @@ const LoginForm = () => {
 
   const handleSubmit = async () => {
     try {
-      
       const hasError = validateSubmit()
       if (hasError) return
 
@@ -191,27 +188,25 @@ const LoginForm = () => {
         password: hashSHA256(password),
       }
       const res = await fetchlogin(payload)
+      console.log(res)
+      if (res.status === 200) {
+        const token = res.data?.token
 
-      if(res.status === 200) { 
-       const token = res.data?.token
+        if (token) {
+          localStorage.setItem('token', token)
+        }
 
-      if (token) {
-        localStorage.setItem("token", token)
+        ToasterNotif('succes', `${res.message === '' ? 'Successfully Logged In!' : res.message} `, '#22c55e')
+        setLoading(false)
+        setIsDisabled(false)
+
+        router.push('/dashboard')
       }
-
-
-      ToasterNotif('succes', `${res.message === '' ? 'Successfully Logged In!' : res.message} `, '#22c55e')
-      setLoading(false)
-      setIsDisabled(false)
-
-      router.push('/dashboard')
-      }
-      
       // console.log(res.data)
-
     } catch (error) {
-      setIsDisabled(false)
-      setLoading(false)
+      if (error) {
+        ToasterNotif('error', `${'Something Goes Wrong...'}`, '#ef4444')
+      }
       if (error.response.status === 400) {
         // console.log(errorMessage)
         const errorMessage = error.response.data.err_message
@@ -220,9 +215,9 @@ const LoginForm = () => {
           `${errorMessage === '' ? 'Something Goes Wrong...' : error.response.data.err_message}`,
           '#ef4444'
         )
-      } else {
-        ToasterNotif('error', `${'Something Goes Wrong...'}`, '#ef4444')
       }
+      setIsDisabled(false)
+      setLoading(false)
     }
   }
 
