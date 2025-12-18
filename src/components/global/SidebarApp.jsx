@@ -31,13 +31,33 @@ const logoWaterMark = './asset/logo/logo-bei-color.svg'
 
 const items = [
   {
-    title: 'Store',
+    title: 'User Aktif',
     url: '/dashboard',
+    active: true,
     icon: Home,
   },
   {
-    title: 'Manage Menu',
-    url: '/manage-menu',
+    title: 'Menu 2',
+    url: '',
+    active: false,
+    icon: Inbox,
+  },
+   {
+    title: 'Menu 3',
+    url: '',
+    active: false,
+    icon: Inbox,
+  },
+   {
+    title: 'Menu 4',
+    url: '',
+    active: false,
+    icon: Inbox,
+  },
+   {
+    title: 'Menu 5',
+    url: '',
+    active: false,
     icon: Inbox,
   },
   // {
@@ -76,22 +96,23 @@ const SidebarApp = () => {
 
             <SidebarTriggerOut/>
           </div>
-       
+         </SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem className={`h-[45px]  ${item.active ? 'bg-primaryOrange' : ''}`} key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url} >
-                      <item.icon />
-                      <span className='font-bold'>{item.title}</span>
+                    <a href={item.url} className='h-full' >
+                      {/* <item.icon /> */}
+                      <div className='p-2 bg-flamingo-900 rounded-xs'></div>
+                      <span className=' text-sm'>{item.title}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+      
       </SidebarContent>
     </Sidebar>
   )
