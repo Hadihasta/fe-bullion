@@ -6,7 +6,7 @@ import StyledCalender from '@/components/form/StyledCalender'
 import StyledDropDown from '@/components/form/StyledDropDown'
 import StyledInputPassword from '@/components/form/StyledInputPassword'
 import { StyledUploudPhoto } from '@/components/form/StyledUploudPhoto'
-import { formatDateOfBirth, emailHelper } from '@/lib/helper'
+import { formatDateOfBirth, emailHelper, minLength } from '@/lib/helper'
 
 // Form Register
 
@@ -224,14 +224,21 @@ const RegisterForm = () => {
         <div className="w-full">
           <h3 className="input_label">{`Password`}</h3>
           <div className="mt-3">
-            <StyledInputPassword />
+            <StyledInputPassword
+              placeholder="Masukkan password"
+              value={values.password}
+              onChange={(e) => handleInput('password', e.target.value)}
+            />
           </div>
         </div>
 
         <div className="w-full">
           <h3 className="input_label whitespace-nowrap">{`Konfirmasi Password`}</h3>
           <div className="mt-3">
-            <StyledInputPassword />
+            <StyledInputPassword 
+             placeholder="Konfirmasi password"
+              value={values.confirmPassword}
+              onChange={(e) => handleInput('confirmPassword', e.target.value)}/>
           </div>
         </div>
       </div>
