@@ -40,3 +40,17 @@ export const formatDateOfBirth = (dateString) => {
   const date = new Date(dateString)
   return date.toISOString()
 }
+
+
+export const isoToFullDateString = (isoString) => {
+  if (!isoString) return ''
+
+  const date = new Date(isoString)
+
+  // Convert to GMT+7 (WIB)
+  const utcTime = date.getTime()
+  const gmt7Offset = 7 * 60 * 60 * 1000
+  const gmt7Date = new Date(utcTime + gmt7Offset)
+
+  return gmt7Date.toString()
+}

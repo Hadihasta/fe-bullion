@@ -221,7 +221,7 @@ const ContentModalEdit = (id) => {
         <div className="w-full">
           <h3 className="input_label">{`Tanggal Lahir`}</h3>
           <div className="mt-3">
-            <StyledCalender onChange={(val) => handleInput('date_of_birth', formatDateOfBirth(val))} />
+            <StyledCalender onChange={(val) => handleInput('date_of_birth', formatDateOfBirth(val))} value={values.date_of_birth} />
           </div>
         </div>
       </div>
