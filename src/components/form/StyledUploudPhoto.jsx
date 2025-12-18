@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import NextImage from '../global/NextImage'
 
-export function StyledUploudPhoto({ className, ...rest }) {
+export function StyledUploudPhoto({ className,  onChange }) {
   return (
     <div className="relative flex-row">
       <input
@@ -13,7 +13,12 @@ export function StyledUploudPhoto({ className, ...rest }) {
           'border border-borderDefault',
           'hover:border-primaryOrange focus:outline-none focus:ring-0 '
         )}
-        {...rest}
+         onChange={(e) => {
+        const file = e.target.files?.[0]
+        if (file) {
+          onChange(file)
+        }
+      }}
       />
       <NextImage
         src="./asset/icon/cloud-upload.svg"

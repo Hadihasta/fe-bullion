@@ -80,7 +80,7 @@ const RegisterForm = () => {
   }
 
   const handleInput = (name, value) => {
-    // console.log(name, value, ' <<<< here input enter parent')
+    console.log(name, value, ' <<<< here input parent')
     dispatch({ type: 'CHANGE', name, value })
 
     if (validators[name]) {
@@ -245,7 +245,9 @@ const RegisterForm = () => {
 
       <h3 className="input_label mt-3">{`Foto Profil`}</h3>
       <div className="mt-3">
-        <StyledUploudPhoto className="mt-3" />
+        <StyledUploudPhoto className="mt-3"  
+        value={values.photo}
+        onChange={(val) => handleInput('photo', val)}/>
       </div>
 
       <ButtonStyled

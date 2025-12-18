@@ -12,7 +12,6 @@ const StyledInputPassword = ({ className, ...rest }) => {
     <div className="relative w-full max-w-sm">
       <input
         type={showPassword ? 'text' : 'password'}
-        placeholder="Password"
         className={clsx(
           className,
           'w-full rounded-lg dark:bg-dark p-2',
