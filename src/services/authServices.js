@@ -10,3 +10,13 @@ try {
     throw error
 }
 }
+
+export const  registerAccount = async(formData) => {
+try {
+    const res = await instance.post('/auth/register', formData)
+    return res.data
+    
+} catch (error) {
+    throw error
+}
+}

@@ -6,7 +6,8 @@ import StyledCalender from '@/components/form/StyledCalender'
 import StyledDropDown from '@/components/form/StyledDropDown'
 import StyledInputPassword from '@/components/form/StyledInputPassword'
 import { StyledUploudPhoto } from '@/components/form/StyledUploudPhoto'
-import { formatDateOfBirth, emailHelper, minLength } from '@/lib/helper'
+import { registerAccount } from '@/services/authServices'
+import { formatDateOfBirth, emailHelper, minLength, hashSHA256 } from '@/lib/helper'
 
 // Form Register
 
@@ -80,7 +81,7 @@ const RegisterForm = () => {
   }
 
   const handleInput = (name, value) => {
-    console.log(name, value, ' <<<< here input parent')
+    // console.log(name, value, ' <<<< here input parent')
     dispatch({ type: 'CHANGE', name, value })
 
     if (validators[name]) {
@@ -112,11 +113,13 @@ const RegisterForm = () => {
     // console.log('REGISTER PAYLOAD:', state)
 
     // send to form handler later
-    // handleFormData()
+    handleFormData()
     setLoading(false)
   }
 
-  const handleFormData = () => {
+  const handleFormData = async() => {
+   
+   try {
     const formData = new FormData()
 
     formData.append('first_name', values.first_name)
@@ -126,19 +129,29 @@ const RegisterForm = () => {
     formData.append('email', values.email)
     formData.append('phone', values.phone)
     formData.append('address', values.address)
-    formData.append('password', values.password)
+    formData.append('password', hashSHA256(values.password))
     formData.append('photo', values.photo)
 
     const obj = Object.fromEntries(formData.entries())
-    console.log(obj)
+
+    // console.log(obj)
+   const res = await registerAccount(formData)
+    console.log(res)
+
+   } catch (error) {
+    console.log(error)
+   }
+    
   }
 
   return (
-    <>
+    <div className=''>
       <div
         id="name_group"
         className="flex gap-4"
       >
+        {/* First Name
+            ○ Required */}
         <div className="w-full">
           <h3 className="input_label">{`Nama Depan`}</h3>
           <StyledInput
@@ -151,6 +164,9 @@ const RegisterForm = () => {
             <div className="warning_label animate-fade-in mt-2">{errors.first_name}</div>
           )}
         </div>
+
+          {/* Last Name
+            ○ Required */}
 
         <div className="w-full">
           <h3 className="input_label">{`Nama Belakang`}</h3>
@@ -166,6 +182,8 @@ const RegisterForm = () => {
         </div>
       </div>
 
+          {/* Gender
+            ○ Required */}
       <div
         id="jenis_bod"
         className="flex gap-4 mt-3"
@@ -177,6 +195,9 @@ const RegisterForm = () => {
           </div>
         </div>
 
+        {/* Date of Birth
+            ○ Required */}
+
         <div className="w-full">
           <h3 className="input_label">{`Tanggal Lahir`}</h3>
           <div className="mt-3">
@@ -185,6 +206,10 @@ const RegisterForm = () => {
         </div>
       </div>
 
+      {/* Email
+        ○ Required
+        ○ Must be email format */}
+
       <h3 className="input_label mt-3">{`Email`}</h3>
       <StyledInput
         className="mt-3"
@@ -192,6 +217,10 @@ const RegisterForm = () => {
         value={values.email}
         onChange={(e) => handleInput('email', e.target.value)}
       />
+
+
+    {   /* Phone Number
+        ○ Required */}
 
       <h3 className="input_label mt-3">{`No. Handphone`}</h3>
       <StyledInput
@@ -208,6 +237,9 @@ const RegisterForm = () => {
         }}
       />
 
+      {/* Address
+        ○ Required */}
+
       <h3 className="input_label mt-3">{`Alamat`}</h3>
       <StyledInput
         className="mt-3"
@@ -216,7 +248,11 @@ const RegisterForm = () => {
         onChange={(e) => handleInput('address', e.target.value)}
       />
 
-      {/* handle here */}
+        {/* Password
+        ○ Required
+        ○ Minimal character 8
+        ○ Must have alphabet and number
+         ○ Min 1 capital letter */}
       <div
         id="password"
         className="flex gap-4 mt-3"
@@ -232,22 +268,34 @@ const RegisterForm = () => {
           </div>
         </div>
 
+            {/* Confirm Password
+            ○ Required
+            ○ Same as Password */}
         <div className="w-full">
           <h3 className="input_label whitespace-nowrap">{`Konfirmasi Password`}</h3>
           <div className="mt-3">
-            <StyledInputPassword 
-             placeholder="Konfirmasi password"
+            <StyledInputPassword
+              placeholder="Konfirmasi password"
               value={values.confirmPassword}
-              onChange={(e) => handleInput('confirmPassword', e.target.value)}/>
+              onChange={(e) => handleInput('confirmPassword', e.target.value)}
+            />
           </div>
         </div>
-      </div>
+      </div>    
+
+      {/* Photo Profile
+        ○ Required
+        ○ Max size: 5Mb
+        ○ Format: JPG/JPEG */}
+
 
       <h3 className="input_label mt-3">{`Foto Profil`}</h3>
       <div className="mt-3">
-        <StyledUploudPhoto className="mt-3"  
-        value={values.photo}
-        onChange={(val) => handleInput('photo', val)}/>
+        <StyledUploudPhoto
+          className="mt-3"
+          value={values.photo}
+          onChange={(val) => handleInput('photo', val)}
+        />
       </div>
 
       <ButtonStyled
@@ -257,7 +305,7 @@ const RegisterForm = () => {
         // disableStatus={isDisabled}
         // loading={loading}
       />
-    </>
+    </div>
   )
 }
 
