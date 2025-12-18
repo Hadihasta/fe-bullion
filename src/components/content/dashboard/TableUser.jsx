@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog'
 import { getDetailUser, editUser } from '@/services/adminService'
 import ContentModalEdit from './ContentModalEdit'
+import ContentModalDetail from './ContentModalDetail'
 
 const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange, onSuccess}) => {
   const [openDialog, setOpenDialog] = useState(false)
@@ -24,7 +25,7 @@ useEffect(()=>{
     try {
       // console.log(id)
       const res = await getDetailUser(id)
-      console.log(res, " <<<< lihat clicked ")
+      // console.log(res, " <<<< lihat clicked ")
 
     } catch (error) {
       
@@ -48,8 +49,6 @@ useEffect(()=>{
     }
     
   }
-
-
 
   const handleOpen = (type, user) => {
     setDialogType(type)
@@ -145,29 +144,30 @@ useEffect(()=>{
         open={openDialog}
         onOpenChange={setOpenDialog}
       >
-        <DialogContent>
+        <DialogContent className=''>
           <DialogHeader>
-            <DialogTitle>{dialogType === 'lihat' ? 'Detail User' : 'Edit User'}</DialogTitle>
+            <DialogTitle >{dialogType === 'lihat' ? 'Lihat User' : 'Edit User'}</DialogTitle>
             {/* <DialogDescription>
               {dialogType === 'lihat' ? 'Informasi lengkap user' : 'Ubah data user'}
             </DialogDescription> */}
           </DialogHeader>
 
           {dialogType === 'lihat' && selectedUser && (
-            <div className="space-y-2 text-sm">
-              <div>
-                <b>ID:</b> {selectedUser._id}
-              </div>
-              <div>
-                <b>Name:</b> {selectedUser.name}
-              </div>
-              <div>
-                <b>Date:</b> {formatDate(selectedUser.date_of_birth)}
-              </div>
-              <div>
-                <b>Status:</b> Registered
-              </div>
-            </div>
+            <ContentModalDetail id={selectedUser._id} />
+            // <div className="space-y-2 text-sm">
+            //   <div>
+            //     <b>ID:</b> {selectedUser._id}
+            //   </div>
+            //   <div>
+            //     <b>Name:</b> {selectedUser.name}
+            //   </div>
+            //   <div>
+            //     <b>Date:</b> {formatDate(selectedUser.date_of_birth)}
+            //   </div>
+            //   <div>
+            //     <b>Status:</b> Registered
+            //   </div>
+            // </div>
           )}
 
           {dialogType === 'edit' && <div className="text-sm text-gray-500"><ContentModalEdit id={selectedUser._id}   onSubmit={() =>{ setOpenDialog(false), onSuccess()}}/></div>}
