@@ -111,13 +111,13 @@ const RegisterForm = () => {
   }
 
   const handleInput = (name, value) => {
-    // console.log(name, value, ' <<<< here input parent')
+  
     // setiap ada perubahan undisable
     setIsDisabled(false)
     dispatch({ type: 'CHANGE', name, value })
 
     if (validators[name]) {
-      // console.log(validators[name])
+    
       const error = validators[name](value, values)
       dispatch({ type: 'SET_ERROR', name, error })
     }
@@ -147,11 +147,11 @@ const RegisterForm = () => {
     if (validateSubmit()) {
       setLoading(false)
       setIsDisabled(true)
-      // console.log('fail schema')
+   
       return
     }
 
-    // console.log('succes gather form', values)
+  
 
     handleFormData()
 
@@ -173,10 +173,10 @@ const RegisterForm = () => {
       formData.append('photo', values.photo)
 
       // const obj = Object.fromEntries(formData.entries())
-      // console.log(obj , " check form")
+     
 
       const res = await registerAccount(formData)
-      // console.log(res)
+     
       if (res.status === 200) {
         ToasterNotif('succes', `${res.message === '' ? 'Successfully Logged In!' : res.message} `, '#22c55e')
         router.push('/dashboard')

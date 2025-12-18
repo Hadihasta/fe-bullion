@@ -188,7 +188,7 @@ const LoginForm = () => {
         password: hashSHA256(password),
       }
       const res = await fetchlogin(payload)
-      // console.log(res)
+  
       if (res.status === 200) {
         const token = res.data?.token
 
@@ -202,10 +202,10 @@ const LoginForm = () => {
 
         router.push('/dashboard')
       }
-      // console.log(res.data)
+   
     } catch (error) {
       if (error.response.status === 400) {
-        // console.log(errorMessage)
+       
         const errorMessage = error.response.data.err_message
         ToasterNotif(
           'error',
