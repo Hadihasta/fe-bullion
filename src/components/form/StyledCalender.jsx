@@ -5,7 +5,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import NextImage from '../global/NextImage'
 
-const StyledCalender = () => {
+const StyledCalender = ({onChange}) => {
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState(undefined)
 
@@ -41,8 +41,9 @@ const StyledCalender = () => {
             selected={date}
             captionLayout="dropdown"
             onSelect={(date) => {
-              setDate(date)
-              setOpen(false)
+              setDate(date),
+              setOpen(false),
+              onChange(date)
             }}
           />
         </PopoverContent>

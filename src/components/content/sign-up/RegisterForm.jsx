@@ -6,6 +6,7 @@ import StyledCalender from '@/components/form/StyledCalender'
 import StyledDropDown from '@/components/form/StyledDropDown'
 import StyledInputPassword from '@/components/form/StyledInputPassword'
 import { StyledUploudPhoto } from '@/components/form/StyledUploudPhoto'
+import { formatDateOfBirth } from '@/lib/helper'
 
 // Form Register
 
@@ -79,6 +80,7 @@ const RegisterForm = () => {
   }
 
   const handleInput = (name, value) => {
+    console.log(name, value , " <<<< here input enter parent")
     dispatch({ type: 'CHANGE', name, value })
 
     if (validators[name]) {
@@ -164,7 +166,7 @@ const RegisterForm = () => {
         </div>
       </div>
 
-      {/* handle here */}
+   
       <div
         id="jenis_bod"
         className="flex gap-4 mt-3"
@@ -177,10 +179,11 @@ const RegisterForm = () => {
           </div>
         </div>
 
+   {/* handle here */}
         <div className="w-full">
           <h3 className="input_label">{`Tanggal Lahir`}</h3>
           <div className="mt-3">
-            <StyledCalender />
+            <StyledCalender  onChange={(val) => handleInput('date_of_birth', formatDateOfBirth(val))} />
           </div>
         </div>
       </div>

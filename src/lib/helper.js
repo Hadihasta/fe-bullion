@@ -34,3 +34,9 @@ export const formatDate = (isoDate) => {
 
   return `${day}/${month}/${year}`
 }
+
+
+export const formatDateOfBirth = (dateString) => {
+  const date = new Date(dateString)
+  return date.toISOString()
+}
