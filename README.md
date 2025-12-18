@@ -106,3 +106,10 @@ root
 |
 |-- package.json
 |-- README.md
+|-- ENV_EXAMPLE // create .env dir and edit with your URL (e.g https://testurl.com/api/v1) 
+
+how to run on local ===> 
+create .env dir and edit with your URL (e.g https://testurl.com/api/v1) 
+go to root dir
+
+npm run dev
