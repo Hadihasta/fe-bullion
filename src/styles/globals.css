@@ -151,8 +151,10 @@ body {
   --color-borderDefault: #e0e0e0;
   --color-borderFocus: #000000;
   --color-grayDisable: #b2b2b2;
+  --color-grayBackground: #E0E0E0;
   --color-backgroundGray: #F1F3FC;
   --color-flamingo-900: #7E1810;
+  --color-flamingo-50: #FFF4ED;
 
   /* --color-background: var(--background);
   --color-foreground: var(--foreground); */

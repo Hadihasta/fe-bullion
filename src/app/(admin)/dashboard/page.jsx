@@ -20,7 +20,6 @@ const page = () => {
     const loadTotalData = async () => {
       try {
         const res = await getTotalData()
-
         const totalData = res.data.length
         const lastPage = Math.ceil(totalData / ITEMS_PER_PAGE)
         setTotalPage(lastPage)
@@ -41,7 +40,7 @@ const page = () => {
 
         const res = await fetchTableUser({ offset, limit: ITEMS_PER_PAGE })
         // console.log(res)
-
+          console.log(res.data)
         if (res?.data?.length) {
           setUsers(res.data)
         } else {
@@ -99,7 +98,7 @@ const page = () => {
       >
         <div
           className="w-full
-            bg-white p-2   rounded-lg h-full"
+            bg-white p-2   rounded-lg h-full "
         >
           <TableUser
             users={users}

@@ -69,7 +69,7 @@ useEffect(()=>{
       <div className="flex flex-col h-full justify-between">
         {/* TABLE */}
         <table className="w-full border-collapse">
-          <thead className="bg-gray-50 text-sm text-gray-500">
+          <thead className="bg-white text-sm text-gray-500 h-[63px]">
             <tr>
               <th className="px-6 py-4 text-left">Account ID</th>
               <th className="px-6 py-4 text-left">Name</th>
@@ -83,7 +83,7 @@ useEffect(()=>{
             {users.map((user, idx) => (
               <tr
                 key={user._id}
-                className={idx % 2 === 0 ? 'bg-orange-50/40' : ''}
+                className={`${idx % 2 === 0 ? 'bg-white' : 'bg-flamingo-50'} h-[63px]`}
               >
                 <td className="px-6 py-4">{user._id}</td>
                 <td className="px-6 py-4 font-medium">{user.name}</td>
@@ -101,7 +101,7 @@ useEffect(()=>{
         </table>
 
         {/* PAGINATION */}
-        <div className="flex justify-end items-center gap-2 px-6 py-4 border-t text-sm">
+        <div className="flex justify-end items-center gap-2 px-6 py-4  text-sm">
           <button
             disabled={currentPage === 1}
             onClick={() => onPageChange(currentPage - 1)}
@@ -118,8 +118,8 @@ useEffect(()=>{
               <button
                 key={page}
                 onClick={() => onPageChange(page)}
-                className={`px-3 py-1 rounded ${
-                  currentPage === page ? 'bg-orange-500 text-white' : 'hover:bg-gray-100'
+                className={`px-3 py-1 rounded bg-backgroundGray ${
+                  currentPage === page ? 'bg-primaryOrange text-white' : 'hover:bg-gray-500'
                 }`}
               >
                 {page}
