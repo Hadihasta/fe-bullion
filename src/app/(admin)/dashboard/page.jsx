@@ -1,10 +1,9 @@
 'use client'
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
 import TableUser from '@/components/content/dashboard/TableUser'
 import ButtonAddUser from '@/components/content/dashboard/ButtonAddUser'
-import { fetchTableUser } from '@/services/adminService'
+import { fetchTableUser, getTotalData } from '@/services/adminService'
 import { DUMMY_USERS } from '@/constants/dummyUser'
-
 
 const page = () => {
   const [users, setUsers] = useState([])
@@ -13,24 +12,42 @@ const page = () => {
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState(1)
 
-const ITEMS_PER_PAGE = 5
+  const ITEMS_PER_PAGE = 5
+
+  useEffect(() => {
+    // get semua data di database , karena di response tidak ada last page ataupun total data
+    const loadTotalData = async () => {
+      try {
+        const res = await getTotalData()
+
+        const totalData = res.data.length
+        const lastPage = Math.ceil(totalData / ITEMS_PER_PAGE)
+        setTotalPage(lastPage)
+      } catch (error) {}
+    }
+
+    loadTotalData()
+    //fetch  awal render saja
+  }, [])
 
   useEffect(() => {
     const masterUsers = async () => {
       setLoading(true)
       try {
-    
-        const res = await fetchTableUser({ page, limit: ITEMS_PER_PAGE })
-        console.log(res)
-    
+        // page = 1 / offset = 0
+        // page = 2 / offset = 2 - 1 * 5 = 5
+        const offset = (page - 1) * ITEMS_PER_PAGE
+
+        const res = await fetchTableUser({ offset, limit: ITEMS_PER_PAGE })
+        // console.log(res)
+
         if (res?.data?.length) {
           setUsers(res.data)
-          setTotalPage(res.meta?.total_page ?? 5)
         } else {
           throw new Error('Empty')
         }
       } catch (err) {
-        console.warn('API unavailable, using dummy')
+        console.warn('API unavailable di luar jam kerja, using dummy data')
 
         // dummy pagination
         const start = (page - 1) * ITEMS_PER_PAGE
@@ -79,7 +96,7 @@ const ITEMS_PER_PAGE = 5
           className="w-full
             bg-white p-2   rounded-lg h-full"
         >
-        <TableUser
+          <TableUser
             users={users}
             loading={loading}
             currentPage={page}

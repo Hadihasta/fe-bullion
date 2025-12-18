@@ -1,4 +1,4 @@
-import { use, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { formatDate } from '@/lib/helper'
 import {
   Dialog,
@@ -6,13 +6,16 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 
 const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange }) => {
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogType, setDialogType] = useState(null)
   const [selectedUser, setSelectedUser] = useState(null)
+
+useEffect(()=>{
+    console.log(users)
+},[users])
 
   const handleOpen = (type, user) => {
     setDialogType(type)
@@ -90,7 +93,7 @@ const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange }
               </button>
             )
           })}
-
+      
           <button
             disabled={currentPage === totalPage}
             onClick={() => onPageChange(currentPage + 1)}
