@@ -188,7 +188,7 @@ const LoginForm = () => {
         password: hashSHA256(password),
       }
       const res = await fetchlogin(payload)
-      console.log(res)
+      // console.log(res)
       if (res.status === 200) {
         const token = res.data?.token
 
@@ -204,9 +204,6 @@ const LoginForm = () => {
       }
       // console.log(res.data)
     } catch (error) {
-      if (error) {
-        ToasterNotif('error', `${'Something Goes Wrong...'}`, '#ef4444')
-      }
       if (error.response.status === 400) {
         // console.log(errorMessage)
         const errorMessage = error.response.data.err_message
@@ -215,8 +212,15 @@ const LoginForm = () => {
           `${errorMessage === '' ? 'Something Goes Wrong...' : error.response.data.err_message}`,
           '#ef4444'
         )
+            setLoading(false)
+        return
       }
-      setIsDisabled(false)
+
+      if (error) {
+        ToasterNotif('error', `${'Something Goes Wrong Please Contact Administrator...'}`, '#ef4444')
+      }
+      
+      // setIsDisabled(false)
       setLoading(false)
     }
   }
