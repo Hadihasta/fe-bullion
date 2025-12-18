@@ -15,9 +15,11 @@ import {
   hasAlphabetAndNumber,
   hasCapitalLetter,
   maxFileSize,
-  isJpgOrJpeg
+  isJpgOrJpeg,
 } from '@/lib/helper'
 import { useRouter } from 'next/navigation'
+import { ToasterNotif } from '@/components/global/ToasterNotif'
+
 // Form Register
 
 const initialState = {
@@ -69,6 +71,7 @@ const formReducer = (state, action) => {
 const RegisterForm = () => {
   const [state, dispatch] = useReducer(formReducer, initialState)
   const [loading, setLoading] = useState(false)
+  const [isDisabled, setIsDisabled] = useState(false)
 
   const router = useRouter()
 
@@ -100,15 +103,17 @@ const RegisterForm = () => {
       return ''
     },
     photo: (v) => {
-     if (!v) return 'Photo wajib diisi' 
-     if (!maxFileSize(v,5)) return 'Maximal Size 5 MB' 
-     if (!isJpgOrJpeg(v)) return 'Foto Harus JPG/JPEG' 
-     return ''
+      if (!v) return 'Photo wajib diisi'
+      if (!maxFileSize(v, 5)) return 'Maximal Size 5 MB'
+      if (!isJpgOrJpeg(v)) return 'Foto Harus JPG/JPEG'
+      return ''
     },
   }
 
   const handleInput = (name, value) => {
     // console.log(name, value, ' <<<< here input parent')
+    // setiap ada perubahan undisable
+    setIsDisabled(false)
     dispatch({ type: 'CHANGE', name, value })
 
     if (validators[name]) {
@@ -132,22 +137,24 @@ const RegisterForm = () => {
   }
 
   const handleTambah = () => {
-    // kalau ada eror jangan lakukan apa apa
-    // if (validateSubmit()) return
-    // loop valuse jika ada erornya maka validator eror muncul
-    Object.entries(values).forEach(([key, value]) => {
-      handleInput(key, value)
-      console.log(key, value)
-    })
-
-    // handleInput('gender', values.gender)
     setLoading(true)
 
-    console.log('REGISTER PAYLOAD:', values)
-    // console.log('REGISTER PAYLOAD:', state)
+    // loop value jika ada erornya maka validator eror muncul
+    Object.entries(values).forEach(([key, value]) => {
+      handleInput(key, value)
+    })
+    // kalau ada eror jangan lakukan apa apa dan set jadi disable / undisable di input
+    if (validateSubmit()) {
+      setLoading(false)
+      setIsDisabled(true)
+      // console.log('fail schema')
+      return
+    }
 
-    // send to form handler later
-    // handleFormData()
+    // console.log('succes gather form', values)
+
+    handleFormData()
+
     setLoading(false)
   }
 
@@ -165,16 +172,19 @@ const RegisterForm = () => {
       formData.append('password', hashSHA256(values.password))
       formData.append('photo', values.photo)
 
-      const obj = Object.fromEntries(formData.entries())
+      // const obj = Object.fromEntries(formData.entries())
+      // console.log(obj , " check form")
 
-      // console.log(obj)
       const res = await registerAccount(formData)
-      console.log(res)
+      // console.log(res)
       if (res.status === 200) {
+        ToasterNotif('succes', `${res.message === '' ? 'Successfully Logged In!' : res.message} `, '#22c55e')
         router.push('/dashboard')
       }
     } catch (error) {
-      console.log(error)
+      if (error) {
+        ToasterNotif('error', `${'Something Goes Wrong...'}`, '#ef4444')
+      }
     }
   }
 
@@ -345,11 +355,13 @@ const RegisterForm = () => {
       </div>
 
       <ButtonStyled
-        className="mt-5 bg-primaryBlue!"
+        // bg-primaryBlue
+        className="mt-5 "
         label="Tambah"
         onClick={handleTambah}
-        // disableStatus={isDisabled}
-        // loading={loading}
+        disableStatus={isDisabled}
+        color={'blue'}
+        loading={loading}
       />
     </>
   )
