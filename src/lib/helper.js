@@ -54,3 +54,31 @@ export const isoToFullDateString = (isoString) => {
 
   return gmt7Date.toString()
 }
+
+
+export const hasAlphabetAndNumber = (value) => {
+  if (typeof value !== 'string') return false
+
+  const hasLetter = /[a-zA-Z]/.test(value)
+  const hasNumber = /[0-9]/.test(value)
+
+  return hasLetter && hasNumber
+}
+
+export const hasCapitalLetter = (value) => {
+  if (typeof value !== 'string') return false
+  return /[A-Z]/.test(value)
+}
+
+export const maxFileSize = (file, maxMB = 5) => {
+  if (!file) return false
+  return file.size <= maxMB * 1024 * 1024
+}
+
+
+export const isJpgOrJpeg = (file) => {
+  if (!file) return false
+
+  const allowedTypes = ['image/jpeg', 'image/jpg']
+  return allowedTypes.includes(file.type)
+}

@@ -7,7 +7,16 @@ import StyledDropDown from '@/components/form/StyledDropDown'
 import StyledInputPassword from '@/components/form/StyledInputPassword'
 import { StyledUploudPhoto } from '@/components/form/StyledUploudPhoto'
 import { registerAccount } from '@/services/authServices'
-import { formatDateOfBirth, emailHelper, minLength, hashSHA256 } from '@/lib/helper'
+import {
+  formatDateOfBirth,
+  emailHelper,
+  minLength,
+  hashSHA256,
+  hasAlphabetAndNumber,
+  hasCapitalLetter,
+  maxFileSize,
+  isJpgOrJpeg
+} from '@/lib/helper'
 import { useRouter } from 'next/navigation'
 // Form Register
 
@@ -61,25 +70,41 @@ const RegisterForm = () => {
   const [state, dispatch] = useReducer(formReducer, initialState)
   const [loading, setLoading] = useState(false)
 
-    const router = useRouter()
+  const router = useRouter()
 
   const { values, errors, touched } = state
 
   const validators = {
     first_name: (v) => (!v ? 'Nama depan wajib diisi' : ''),
     last_name: (v) => (!v ? 'Nama belakang wajib diisi' : ''),
+    gender: (v) => (!v ? 'Jenis Kelamin wajib diisi' : ''),
+    date_of_birth: (v) => (!v ? 'Tanggal Lahir Wajib diisi' : ''),
     email: (v) => {
       if (!v) return 'Email wajib diisi'
       if (!emailHelper(v)) return 'Format email tidak valid'
       return ''
     },
     phone: (v) => (!v ? 'No HP wajib diisi' : ''),
+    address: (v) => (!v ? 'Email wajib diisi' : ''),
+
     password: (v) => {
       if (!v) return 'Password wajib diisi'
       if (!minLength(v, 8)) return 'Minimal 8 karakter'
+      if (!hasAlphabetAndNumber(v)) return 'Harus Memiliki Huruf dan Angka'
+      if (!hasCapitalLetter(v)) return 'Harus Memiliki Huruf Kapital'
       return ''
     },
-    confirmPassword: (v, values) => (v !== values.password ? 'Password tidak sama' : ''),
+    confirmPassword: (v, values) => {
+      if (!v) return 'Confirm Password wajib diisi'
+      if (v !== values.password) return 'Password tidak sama'
+      return ''
+    },
+    photo: (v) => {
+     if (!v) return 'Photo wajib diisi' 
+     if (!maxFileSize(v,5)) return 'Maximal Size 5 MB' 
+     if (!isJpgOrJpeg(v)) return 'Foto Harus JPG/JPEG' 
+     return ''
+    },
   }
 
   const handleInput = (name, value) => {
@@ -87,6 +112,7 @@ const RegisterForm = () => {
     dispatch({ type: 'CHANGE', name, value })
 
     if (validators[name]) {
+      // console.log(validators[name])
       const error = validators[name](value, values)
       dispatch({ type: 'SET_ERROR', name, error })
     }
@@ -108,44 +134,48 @@ const RegisterForm = () => {
   const handleTambah = () => {
     // kalau ada eror jangan lakukan apa apa
     // if (validateSubmit()) return
+    // loop valuse jika ada erornya maka validator eror muncul
+    Object.entries(values).forEach(([key, value]) => {
+      handleInput(key, value)
+      console.log(key, value)
+    })
 
+    // handleInput('gender', values.gender)
     setLoading(true)
 
     console.log('REGISTER PAYLOAD:', values)
     // console.log('REGISTER PAYLOAD:', state)
 
     // send to form handler later
-    handleFormData()
+    // handleFormData()
     setLoading(false)
   }
 
-  const handleFormData = async() => {
-   
-   try {
-    const formData = new FormData()
+  const handleFormData = async () => {
+    try {
+      const formData = new FormData()
 
-    formData.append('first_name', values.first_name)
-    formData.append('last_name', values.last_name)
-    formData.append('gender', values.gender)
-    formData.append('date_of_birth', values.date_of_birth)
-    formData.append('email', values.email)
-    formData.append('phone', values.phone)
-    formData.append('address', values.address)
-    formData.append('password', hashSHA256(values.password))
-    formData.append('photo', values.photo)
+      formData.append('first_name', values.first_name)
+      formData.append('last_name', values.last_name)
+      formData.append('gender', values.gender)
+      formData.append('date_of_birth', values.date_of_birth)
+      formData.append('email', values.email)
+      formData.append('phone', values.phone)
+      formData.append('address', values.address)
+      formData.append('password', hashSHA256(values.password))
+      formData.append('photo', values.photo)
 
-    const obj = Object.fromEntries(formData.entries())
+      const obj = Object.fromEntries(formData.entries())
 
-    // console.log(obj)
-   const res = await registerAccount(formData)
-    console.log(res)
-       if (res.status === 200) {
-   router.push('/dashboard')
+      // console.log(obj)
+      const res = await registerAccount(formData)
+      console.log(res)
+      if (res.status === 200) {
+        router.push('/dashboard')
       }
-   } catch (error) {
-    console.log(error)
-   }
-    
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -169,7 +199,7 @@ const RegisterForm = () => {
           )}
         </div>
 
-          {/* Last Name
+        {/* Last Name
             ○ Required */}
 
         <div className="w-full">
@@ -186,7 +216,7 @@ const RegisterForm = () => {
         </div>
       </div>
 
-          {/* Gender
+      {/* Gender
             ○ Required */}
       <div
         id="jenis_bod"
@@ -197,6 +227,7 @@ const RegisterForm = () => {
           <div className="mt-3">
             <StyledDropDown onChange={(val) => handleInput('gender', val)} />
           </div>
+          {touched.gender && errors.gender && <div className="warning_label animate-fade-in mt-2">{errors.gender}</div>}
         </div>
 
         {/* Date of Birth
@@ -207,6 +238,9 @@ const RegisterForm = () => {
           <div className="mt-3">
             <StyledCalender onChange={(val) => handleInput('date_of_birth', formatDateOfBirth(val))} />
           </div>
+          {touched.date_of_birth && errors.date_of_birth && (
+            <div className="warning_label animate-fade-in mt-2">{errors.date_of_birth}</div>
+          )}
         </div>
       </div>
 
@@ -221,9 +255,9 @@ const RegisterForm = () => {
         value={values.email}
         onChange={(e) => handleInput('email', e.target.value)}
       />
+      {touched.email && errors.email && <div className="warning_label animate-fade-in mt-2">{errors.email}</div>}
 
-
-    {   /* Phone Number
+      {/* Phone Number
         ○ Required */}
 
       <h3 className="input_label mt-3">{`No. Handphone`}</h3>
@@ -240,6 +274,7 @@ const RegisterForm = () => {
           }
         }}
       />
+      {touched.phone && errors.phone && <div className="warning_label animate-fade-in mt-2">{errors.phone}</div>}
 
       {/* Address
         ○ Required */}
@@ -251,8 +286,9 @@ const RegisterForm = () => {
         value={values.address}
         onChange={(e) => handleInput('address', e.target.value)}
       />
+      {touched.address && errors.address && <div className="warning_label animate-fade-in mt-2">{errors.address}</div>}
 
-        {/* Password
+      {/* Password
         ○ Required
         ○ Minimal character 8
         ○ Must have alphabet and number
@@ -269,10 +305,13 @@ const RegisterForm = () => {
               value={values.password}
               onChange={(e) => handleInput('password', e.target.value)}
             />
+            {touched.password && errors.password && (
+              <div className="warning_label animate-fade-in mt-2">{errors.password}</div>
+            )}
           </div>
         </div>
 
-            {/* Confirm Password
+        {/* Confirm Password
             ○ Required
             ○ Same as Password */}
         <div className="w-full">
@@ -283,15 +322,17 @@ const RegisterForm = () => {
               value={values.confirmPassword}
               onChange={(e) => handleInput('confirmPassword', e.target.value)}
             />
+            {touched.confirmPassword && errors.confirmPassword && (
+              <div className="warning_label animate-fade-in mt-2">{errors.confirmPassword}</div>
+            )}
           </div>
         </div>
-      </div>    
+      </div>
 
       {/* Photo Profile
         ○ Required
         ○ Max size: 5Mb
         ○ Format: JPG/JPEG */}
-
 
       <h3 className="input_label mt-3">{`Foto Profil`}</h3>
       <div className="mt-3">
@@ -300,6 +341,7 @@ const RegisterForm = () => {
           value={values.photo}
           onChange={(val) => handleInput('photo', val)}
         />
+        {touched.photo && errors.photo && <div className="warning_label animate-fade-in mt-2">{errors.photo}</div>}
       </div>
 
       <ButtonStyled

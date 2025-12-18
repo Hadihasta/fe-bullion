@@ -7,6 +7,7 @@ export function StyledUploudPhoto({ className,  onChange }) {
       <input
         id="picture"
         type="file"
+         accept=".jpg,.jpeg,image/jpeg"
         className={clsx(
           className,
           'w-full rounded-lg dark:bg-dark p-2',
