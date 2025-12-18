@@ -187,9 +187,13 @@ const ContentModalEdit = ({ id, onSubmit }) => {
       }
       // console.log('succes schema')
 
+      const hashedPassword = hashSHA256(values.password)
       const payload = {
         id,
-        body: values,
+        body: {
+          ...values,
+        password: hashedPassword,
+        },
       }
 
       // console.log('edit PAYLOAD:', payload)
