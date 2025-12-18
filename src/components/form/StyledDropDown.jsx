@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -10,8 +10,17 @@ import {
 
 import NextImage from '../global/NextImage'
 
-const StyledDropDown = ({onChange}) => {
+
+// values adalah default jika tidak ada maka gunakan place holder
+const StyledDropDown = ({ value, onChange }) => {
   const [selected, setSelected] = React.useState(undefined)
+
+useEffect(() => {
+    if (!value) return
+
+    if (value === 'male') setSelected('Laki - Laki')
+    if (value === 'female') setSelected('Perempuan')
+  }, [value])
 
   return (
     <DropdownMenu>
@@ -41,7 +50,7 @@ const StyledDropDown = ({onChange}) => {
           </button>
           <DropdownMenuSeparator />
           <button className='w-full' onClick={() => { onChange('female'), setSelected('Perempuan')}}>
-          <DropdownMenuItem>Perempuan</DropdownMenuItem>
+          <DropdownMenuItem>Perempuan </DropdownMenuItem>
           </button>
         </div>
       </DropdownMenuContent>

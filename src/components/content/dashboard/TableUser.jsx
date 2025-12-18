@@ -7,6 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { getDetailUser, editUser } from '@/services/adminService'
+import ContentModalEdit from './ContentModalEdit'
 
 const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange }) => {
   const [openDialog, setOpenDialog] = useState(false)
@@ -14,8 +16,40 @@ const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange }
   const [selectedUser, setSelectedUser] = useState(null)
 
 useEffect(()=>{
-    console.log(users)
+    // console.log(users)
 },[users])
+
+
+  const inspectUser = async(id) => { 
+    try {
+      // console.log(id)
+      const res = await getDetailUser(id)
+      console.log(res, " <<<< lihat clicked ")
+
+    } catch (error) {
+      
+    }
+    
+  }
+  
+  const handleEditUser = async(id) => { 
+    try {
+
+      const payload = {
+        id,
+        body
+      }
+      // console.log(id)
+      const res = await editUser(payload)
+      console.log(res, " <<<< edit fetch")
+
+    } catch (error) {
+      
+    }
+    
+  }
+
+
 
   const handleOpen = (type, user) => {
     setDialogType(type)
@@ -59,7 +93,7 @@ useEffect(()=>{
                   <span className="px-4 py-1 rounded-full text-xs bg-green-100 text-green-700">Registered</span>
                 </td>
                 <td className="px-6 py-4 text-orange-500 flex gap-4">
-                  <button onClick={() => handleOpen('lihat', user)}>👁 Lihat</button>
+                  <button onClick={() => {handleOpen('lihat', user), inspectUser(user._id)  }}>👁 Lihat</button>
                   <button onClick={() => handleOpen('edit', user)}>✏️ Edit</button>
                 </td>
               </tr>
@@ -114,9 +148,9 @@ useEffect(()=>{
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{dialogType === 'lihat' ? 'Detail User' : 'Edit User'}</DialogTitle>
-            <DialogDescription>
+            {/* <DialogDescription>
               {dialogType === 'lihat' ? 'Informasi lengkap user' : 'Ubah data user'}
-            </DialogDescription>
+            </DialogDescription> */}
           </DialogHeader>
 
           {dialogType === 'lihat' && selectedUser && (
@@ -136,7 +170,7 @@ useEffect(()=>{
             </div>
           )}
 
-          {dialogType === 'edit' && <div className="text-sm text-gray-500">Form edit user di sini...</div>}
+          {dialogType === 'edit' && <div className="text-sm text-gray-500"><ContentModalEdit id={selectedUser._id} /></div>}
         </DialogContent>
       </Dialog>
     </>

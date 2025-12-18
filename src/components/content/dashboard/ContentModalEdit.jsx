@@ -1,15 +1,12 @@
-'use client'
-import { useReducer, useState } from 'react'
+import React, { useReducer, useState, useEffect } from 'react'
 import StyledInput from '@/components/form/StyledInput'
 import ButtonStyled from '@/components/global/ButtonStyled'
 import StyledCalender from '@/components/form/StyledCalender'
 import StyledDropDown from '@/components/form/StyledDropDown'
 import StyledInputPassword from '@/components/form/StyledInputPassword'
 import { StyledUploudPhoto } from '@/components/form/StyledUploudPhoto'
-import { registerAccount } from '@/services/authServices'
 import { formatDateOfBirth, emailHelper, minLength, hashSHA256 } from '@/lib/helper'
-
-// Form Register
+import { editUser, getDetailUser } from '@/services/adminService'
 
 const initialState = {
   values: {
@@ -42,7 +39,14 @@ const formReducer = (state, action) => {
           [action.name]: true,
         },
       }
-
+  case 'SET_INITIAL_VALUES':
+      return {
+        ...state,
+        values: {
+          ...state.values,
+          ...action.payload,
+        },
+      }
     case 'SET_ERROR':
       return {
         ...state,
@@ -57,11 +61,44 @@ const formReducer = (state, action) => {
   }
 }
 
-const RegisterForm = () => {
+const ContentModalEdit = (id) => {
   const [state, dispatch] = useReducer(formReducer, initialState)
   const [loading, setLoading] = useState(false)
 
   const { values, errors, touched } = state
+  useEffect(() => {
+    // console.log(id, " first fire")
+    if (!id) return
+
+    const inspectUser = async (data) => {
+      try {
+        const { id } = data
+
+        const res = await getDetailUser(id)
+        console.log(res, ' <<<< fetch detail untuk initial state')
+        const user = res.data
+        dispatch({
+          type: 'SET_INITIAL_VALUES',
+          payload: {
+            first_name: user.first_name ?? '',
+            last_name: user.last_name ?? '',
+            gender: user.gender ?? '',
+            date_of_birth: user.date_of_birth ?? '',
+            email: user.email ?? '',
+            phone: user.phone ?? '',
+            address: user.address ?? '',
+            photo: null,
+            password: '',
+            confirmPassword: '',
+          },
+        })
+
+       
+      } catch (error) {}
+    }
+
+    inspectUser(id)
+  }, [id])
 
   const validators = {
     first_name: (v) => (!v ? 'Nama depan wajib diisi' : ''),
@@ -103,45 +140,28 @@ const RegisterForm = () => {
     return hasError
   }
 
-  const handleTambah = () => {
-    // kalau ada eror jangan lakukan apa apa
-    // if (validateSubmit()) return
+  const handleEditUser = async () => {
+    try {
+      // kalau ada eror jangan lakukan apa apa
+      // if (validateSubmit()) return
 
-    setLoading(true)
+      setLoading(true)
 
-    console.log('REGISTER PAYLOAD:', values)
-    // console.log('REGISTER PAYLOAD:', state)
+      const payload = {
+        id,
+        body: values,
+      }
 
-    // send to form handler later
-    handleFormData()
-    setLoading(false)
-  }
+      console.log('edit PAYLOAD:', payload)
 
-  const handleFormData = async() => {
-   
-   try {
-    const formData = new FormData()
+      //   const res = await editUser(payload)
 
-    formData.append('first_name', values.first_name)
-    formData.append('last_name', values.last_name)
-    formData.append('gender', values.gender)
-    formData.append('date_of_birth', values.date_of_birth)
-    formData.append('email', values.email)
-    formData.append('phone', values.phone)
-    formData.append('address', values.address)
-    formData.append('password', hashSHA256(values.password))
-    formData.append('photo', values.photo)
+      // console.log('REGISTER PAYLOAD:', state)
 
-    const obj = Object.fromEntries(formData.entries())
-
-    // console.log(obj)
-   const res = await registerAccount(formData)
-    console.log(res)
-
-   } catch (error) {
-    console.log(error)
-   }
-    
+      // send to form handler later
+      // handleFormData()
+      setLoading(false)
+    } catch (error) {}
   }
 
   return (
@@ -157,7 +177,7 @@ const RegisterForm = () => {
           <StyledInput
             className="mt-3"
             placeholder="Nama Depan"
-            value={values.firstName}
+            value={values.first_name}
             onChange={(e) => handleInput('first_name', e.target.value)}
           />
           {touched.first_name && errors.first_name && (
@@ -165,7 +185,7 @@ const RegisterForm = () => {
           )}
         </div>
 
-          {/* Last Name
+        {/* Last Name
             ○ Required */}
 
         <div className="w-full">
@@ -173,7 +193,7 @@ const RegisterForm = () => {
           <StyledInput
             className="mt-3"
             placeholder="Nama Belakang"
-            value={values.lastName}
+            value={values.last_name}
             onChange={(e) => handleInput('last_name', e.target.value)}
           />
           {touched.last_name && errors.last_name && (
@@ -182,7 +202,7 @@ const RegisterForm = () => {
         </div>
       </div>
 
-          {/* Gender
+      {/* Gender
             ○ Required */}
       <div
         id="jenis_bod"
@@ -191,7 +211,7 @@ const RegisterForm = () => {
         <div className="w-full">
           <h3 className="input_label">{`Jenis Kelamin`}</h3>
           <div className="mt-3">
-            <StyledDropDown onChange={(val) => handleInput('gender', val)} />
+            <StyledDropDown onChange={(val) => handleInput('gender', val)} value={values.gender} />
           </div>
         </div>
 
@@ -218,8 +238,7 @@ const RegisterForm = () => {
         onChange={(e) => handleInput('email', e.target.value)}
       />
 
-
-    {   /* Phone Number
+      {/* Phone Number
         ○ Required */}
 
       <h3 className="input_label mt-3">{`No. Handphone`}</h3>
@@ -248,7 +267,7 @@ const RegisterForm = () => {
         onChange={(e) => handleInput('address', e.target.value)}
       />
 
-        {/* Password
+      {/* Password
         ○ Required
         ○ Minimal character 8
         ○ Must have alphabet and number
@@ -268,7 +287,7 @@ const RegisterForm = () => {
           </div>
         </div>
 
-            {/* Confirm Password
+        {/* Confirm Password
             ○ Required
             ○ Same as Password */}
         <div className="w-full">
@@ -281,13 +300,12 @@ const RegisterForm = () => {
             />
           </div>
         </div>
-      </div>    
+      </div>
 
       {/* Photo Profile
         ○ Required
         ○ Max size: 5Mb
         ○ Format: JPG/JPEG */}
-
 
       <h3 className="input_label mt-3">{`Foto Profil`}</h3>
       <div className="mt-3">
@@ -299,9 +317,9 @@ const RegisterForm = () => {
       </div>
 
       <ButtonStyled
-        className="mt-5 bg-primaryBlue!"
-        label="Tambah"
-        onClick={handleTambah}
+        className="mt-5 "
+        label="Simpan"
+        onClick={handleEditUser}
         // disableStatus={isDisabled}
         // loading={loading}
       />
@@ -309,4 +327,4 @@ const RegisterForm = () => {
   )
 }
 
-export default RegisterForm
+export default ContentModalEdit
