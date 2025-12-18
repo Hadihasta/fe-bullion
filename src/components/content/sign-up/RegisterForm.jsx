@@ -6,7 +6,7 @@ import StyledCalender from '@/components/form/StyledCalender'
 import StyledDropDown from '@/components/form/StyledDropDown'
 import StyledInputPassword from '@/components/form/StyledInputPassword'
 import { StyledUploudPhoto } from '@/components/form/StyledUploudPhoto'
-import { formatDateOfBirth } from '@/lib/helper'
+import { formatDateOfBirth, emailHelper } from '@/lib/helper'
 
 // Form Register
 
@@ -80,7 +80,7 @@ const RegisterForm = () => {
   }
 
   const handleInput = (name, value) => {
-    console.log(name, value , " <<<< here input enter parent")
+    // console.log(name, value, ' <<<< here input enter parent')
     dispatch({ type: 'CHANGE', name, value })
 
     if (validators[name]) {
@@ -166,7 +166,6 @@ const RegisterForm = () => {
         </div>
       </div>
 
-   
       <div
         id="jenis_bod"
         className="flex gap-4 mt-3"
@@ -174,16 +173,14 @@ const RegisterForm = () => {
         <div className="w-full">
           <h3 className="input_label">{`Jenis Kelamin`}</h3>
           <div className="mt-3">
-            <StyledDropDown 
-              onChange={(val) => handleInput('gender', val)} />
+            <StyledDropDown onChange={(val) => handleInput('gender', val)} />
           </div>
         </div>
 
-   {/* handle here */}
         <div className="w-full">
           <h3 className="input_label">{`Tanggal Lahir`}</h3>
           <div className="mt-3">
-            <StyledCalender  onChange={(val) => handleInput('date_of_birth', formatDateOfBirth(val))} />
+            <StyledCalender onChange={(val) => handleInput('date_of_birth', formatDateOfBirth(val))} />
           </div>
         </div>
       </div>
@@ -198,16 +195,28 @@ const RegisterForm = () => {
 
       <h3 className="input_label mt-3">{`No. Handphone`}</h3>
       <StyledInput
+        type="number"
         className="mt-3"
         placeholder="Masukkan no handphone"
+        value={values.phone}
+        onChange={(e) => handleInput('phone', e.target.value)}
+        onWheel={(e) => e.target.blur()}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            e.preventDefault()
+          }
+        }}
       />
 
       <h3 className="input_label mt-3">{`Alamat`}</h3>
       <StyledInput
         className="mt-3"
         placeholder="Masukkan Alamat"
+        value={values.address}
+        onChange={(e) => handleInput('address', e.target.value)}
       />
 
+      {/* handle here */}
       <div
         id="password"
         className="flex gap-4 mt-3"
