@@ -5,7 +5,7 @@ import StyledCalender from '@/components/form/StyledCalender'
 import StyledDropDown from '@/components/form/StyledDropDown'
 import StyledInputPassword from '@/components/form/StyledInputPassword'
 import { StyledUploudPhoto } from '@/components/form/StyledUploudPhoto'
-import { formatDateOfBirth, emailHelper, minLength, hashSHA256 } from '@/lib/helper'
+import { formatDateOfBirth, emailHelper, minLength, hashSHA256  } from '@/lib/helper'
 import { editUser, getDetailUser } from '@/services/adminService'
 
 const initialState = {
@@ -61,7 +61,7 @@ const formReducer = (state, action) => {
   }
 }
 
-const ContentModalEdit = (id) => {
+const ContentModalEdit = ({id , onSubmit })  => {
   const [state, dispatch] = useReducer(formReducer, initialState)
   const [loading, setLoading] = useState(false)
 
@@ -70,9 +70,11 @@ const ContentModalEdit = (id) => {
     // console.log(id, " first fire")
     if (!id) return
 
+    console.log(id)
+
     const inspectUser = async (data) => {
       try {
-        const { id } = data
+        const  id  = data
 
         const res = await getDetailUser(id)
         console.log(res, ' <<<< fetch detail untuk initial state')
@@ -87,9 +89,9 @@ const ContentModalEdit = (id) => {
             email: user.email ?? '',
             phone: user.phone ?? '',
             address: user.address ?? '',
-            photo: null,
-            password: '',
-            confirmPassword: '',
+            photo: user.photo,
+            // password: '',
+            // confirmPassword: '',
           },
         })
 
@@ -118,7 +120,11 @@ const ContentModalEdit = (id) => {
   }
 
   const handleInput = (name, value) => {
-    // console.log(name, value, ' <<<< here input parent')
+    // if(name === 'photo') {
+    //      dispatch({ type: 'CHANGE', name, value })
+    // }
+
+    console.log(name, value, ' <<<< here input parent')
     dispatch({ type: 'CHANGE', name, value })
 
     if (validators[name]) {
@@ -146,7 +152,7 @@ const ContentModalEdit = (id) => {
       // if (validateSubmit()) return
 
       setLoading(true)
-
+    
       const payload = {
         id,
         body: values,
@@ -154,7 +160,12 @@ const ContentModalEdit = (id) => {
 
       console.log('edit PAYLOAD:', payload)
 
-      //   const res = await editUser(payload)
+        const res = await editUser(payload)
+        console.log(res, " <<<< ")
+            if (res.status === 200) {
+                // close modal
+                onSubmit()
+            }
 
       // console.log('REGISTER PAYLOAD:', state)
 

@@ -20,8 +20,6 @@ export const getTotalData = async () => {
   }
 }
 
-
-
 export const getDetailUser = async (id) => {
   try {
     const res = await instance.get(`/admin/${id}`)
@@ -31,17 +29,19 @@ export const getDetailUser = async (id) => {
   }
 }
 
-
-
 export const editUser = async (payload) => {
   try {
+    // const {id} = payload
+    const {
+      body,
+      id
+    } = payload
 
-    // console.log(payload)
-    // const {body, id} = payload
-    // const res = await instance.put(`/admin/${id}/update`, body)
-    // return res
+
+    // console.log(id)
+    const res = await instance.put(`/admin/${id}/update`, body)
+    return res.data
   } catch (error) {
     throw error
   }
 }
-

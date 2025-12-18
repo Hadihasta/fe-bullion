@@ -10,7 +10,7 @@ import {
 import { getDetailUser, editUser } from '@/services/adminService'
 import ContentModalEdit from './ContentModalEdit'
 
-const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange }) => {
+const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange, onSuccess}) => {
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogType, setDialogType] = useState(null)
   const [selectedUser, setSelectedUser] = useState(null)
@@ -170,7 +170,7 @@ useEffect(()=>{
             </div>
           )}
 
-          {dialogType === 'edit' && <div className="text-sm text-gray-500"><ContentModalEdit id={selectedUser._id} /></div>}
+          {dialogType === 'edit' && <div className="text-sm text-gray-500"><ContentModalEdit id={selectedUser._id}   onSubmit={() =>{ setOpenDialog(false), onSuccess()}}/></div>}
         </DialogContent>
       </Dialog>
     </>

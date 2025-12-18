@@ -8,7 +8,7 @@ import StyledInputPassword from '@/components/form/StyledInputPassword'
 import { StyledUploudPhoto } from '@/components/form/StyledUploudPhoto'
 import { registerAccount } from '@/services/authServices'
 import { formatDateOfBirth, emailHelper, minLength, hashSHA256 } from '@/lib/helper'
-
+import { useRouter } from 'next/navigation'
 // Form Register
 
 const initialState = {
@@ -60,6 +60,8 @@ const formReducer = (state, action) => {
 const RegisterForm = () => {
   const [state, dispatch] = useReducer(formReducer, initialState)
   const [loading, setLoading] = useState(false)
+
+    const router = useRouter()
 
   const { values, errors, touched } = state
 
@@ -137,7 +139,9 @@ const RegisterForm = () => {
     // console.log(obj)
    const res = await registerAccount(formData)
     console.log(res)
-
+       if (res.status === 200) {
+   router.push('/dashboard')
+      }
    } catch (error) {
     console.log(error)
    }

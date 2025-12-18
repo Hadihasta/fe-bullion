@@ -11,6 +11,7 @@ const page = () => {
 
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState(1)
+  const [refetchKey, setRefetchKey] = useState(0)
 
   const ITEMS_PER_PAGE = 5
 
@@ -61,7 +62,11 @@ const page = () => {
     }
 
     masterUsers()
-  }, [page])
+  }, [page,refetchKey])
+
+  const handleCloseModal = () => {
+  setRefetchKey(prev => prev + 1)
+}
 
   return (
     <div className="flex-col">
@@ -102,6 +107,7 @@ const page = () => {
             currentPage={page}
             totalPage={totalPage}
             onPageChange={setPage}
+            onSuccess={handleCloseModal}
           />
         </div>
       </div>
