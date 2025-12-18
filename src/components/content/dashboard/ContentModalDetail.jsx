@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getDetailUser } from '@/services/adminService'
 
+
 const ContentModalDetail = (id) => {
   const [dataUser, setDataUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -82,8 +83,6 @@ const ContentModalDetail = (id) => {
         </div>
       </div>
 
-      {/* BUTTON */}
-      {/* <button className="mt-6 w-full bg-orange-500 text-white py-2 rounded-lg font-semibold">Edit</button> */}
     </div>
   )
 }

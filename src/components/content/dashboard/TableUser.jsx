@@ -1,55 +1,20 @@
 import { useEffect, useState } from 'react'
 import { formatDate } from '@/lib/helper'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { getDetailUser, editUser } from '@/services/adminService'
 import ContentModalEdit from './ContentModalEdit'
 import ContentModalDetail from './ContentModalDetail'
+import { Eye, SquarePen } from 'lucide-react'
+import NextImage from '@/components/global/NextImage'
 
-const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange, onSuccess}) => {
+const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange, onSuccess }) => {
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogType, setDialogType] = useState(null)
   const [selectedUser, setSelectedUser] = useState(null)
 
-useEffect(()=>{
-    // console.log(users)
-},[users])
-
-
-  const inspectUser = async(id) => { 
-    try {
-      // console.log(id)
-      const res = await getDetailUser(id)
-      // console.log(res, " <<<< lihat clicked ")
-
-    } catch (error) {
-      
-    }
-    
-  }
   
-  const handleEditUser = async(id) => { 
-    try {
 
-      const payload = {
-        id,
-        body
-      }
-      // console.log(id)
-      const res = await editUser(payload)
-      console.log(res, " <<<< edit fetch")
-
-    } catch (error) {
-      
-    }
-    
-  }
-
+ 
   const handleOpen = (type, user) => {
     setDialogType(type)
     setSelectedUser(user)
@@ -67,7 +32,7 @@ useEffect(()=>{
   return (
     <>
       <div className="flex flex-col h-full justify-between">
-        {/* TABLE */}
+        {/* table */}
         <table className="w-full border-collapse">
           <thead className="bg-white text-sm text-gray-500 h-[63px]">
             <tr>
@@ -83,24 +48,43 @@ useEffect(()=>{
             {users.map((user, idx) => (
               <tr
                 key={user._id}
-                className={`${idx % 2 === 0 ? 'bg-white' : 'bg-flamingo-50'} h-[63px]`}
+                className={`${
+                  idx % 2 === 0 ? 'bg-white' : 'bg-flamingo-50'
+                } text-sm font-medium h-[63px] hover:bg-gray-100 cursor-default`}
               >
                 <td className="px-6 py-4">{user._id}</td>
-                <td className="px-6 py-4 font-medium">{user.name}</td>
+                <td className="px-6 py-4 ">{user.name}</td>
                 <td className="px-6 py-4 text-gray-600">{formatDate(user.date_of_birth)}</td>
-                <td className="px-6 py-4">
-                  <span className="px-4 py-1 rounded-full text-xs bg-green-100 text-green-700">Registered</span>
+                <td className=" py-4">
+                  <span className="px-6 py-1 rounded-full w-full bg-greenBackground text-greenText">Registered</span>
                 </td>
-                <td className="px-6 py-4 text-orange-500 flex gap-4">
-                  <button onClick={() => {handleOpen('lihat', user), inspectUser(user._id)  }}>👁 Lihat</button>
-                  <button onClick={() => handleOpen('edit', user)}>✏️ Edit</button>
+                <td className="px-6 py-4 text-orange-500 flex gap-4 cursor-pointer">
+                  <button
+                    className="cursor-pointer flex-row gap-2 items-center py-2"
+                    onClick={() => {
+                      handleOpen('lihat', user)
+                    }}
+                  >
+                    {' '}
+                    <Eye
+                      className="h-4 w-4"
+                      color="#FD5725"
+                    />
+                    Lihat
+                  </button>
+                  <button
+                    className="cursor-pointer flex-row gap-2 items-center py-2"
+                    onClick={() => handleOpen('edit', user)}
+                  >
+                   <SquarePen className="h-4 w-4" color="#FD5725" /> Edit
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* PAGINATION */}
+        {/* pgnation */}
         <div className="flex justify-end items-center gap-2 px-6 py-4  text-sm">
           <button
             disabled={currentPage === 1}
@@ -126,7 +110,7 @@ useEffect(()=>{
               </button>
             )
           })}
-      
+
           <button
             disabled={currentPage === totalPage}
             onClick={() => onPageChange(currentPage + 1)}
@@ -139,38 +123,39 @@ useEffect(()=>{
         </div>
       </div>
 
-      {/* DIALOG */}
+      {/* modal */}
       <Dialog
         open={openDialog}
         onOpenChange={setOpenDialog}
       >
-        <DialogContent className=''>
-          <DialogHeader>
-            <DialogTitle >{dialogType === 'lihat' ? 'Lihat User' : 'Edit User'}</DialogTitle>
-            {/* <DialogDescription>
-              {dialogType === 'lihat' ? 'Informasi lengkap user' : 'Ubah data user'}
-            </DialogDescription> */}
+        <DialogContent >
+          <DialogHeader className={`flex-space-beetween`}>
+            <DialogTitle className={`modal_label `}>{dialogType === 'lihat' ? 'Lihat User' : 'Edit User'} </DialogTitle>
+            <button onClick={()=>setOpenDialog(false)} className='cursor-pointer' >
+               <NextImage
+              src="./asset/icon/cancel-circle.svg"
+              alt="close icon"
+              width={25}
+              height={25}
+            />
+            </button >
           </DialogHeader>
 
           {dialogType === 'lihat' && selectedUser && (
             <ContentModalDetail id={selectedUser._id} />
-            // <div className="space-y-2 text-sm">
-            //   <div>
-            //     <b>ID:</b> {selectedUser._id}
-            //   </div>
-            //   <div>
-            //     <b>Name:</b> {selectedUser.name}
-            //   </div>
-            //   <div>
-            //     <b>Date:</b> {formatDate(selectedUser.date_of_birth)}
-            //   </div>
-            //   <div>
-            //     <b>Status:</b> Registered
-            //   </div>
-            // </div>
+           
           )}
 
-          {dialogType === 'edit' && <div className="text-sm text-gray-500"><ContentModalEdit id={selectedUser._id}   onSubmit={() =>{ setOpenDialog(false), onSuccess()}}/></div>}
+          {dialogType === 'edit' && (
+            <div className="text-sm text-gray-500">
+              <ContentModalEdit
+                id={selectedUser._id}
+                onSubmit={() => {
+                  setOpenDialog(false), onSuccess()
+                }}
+              />
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </>

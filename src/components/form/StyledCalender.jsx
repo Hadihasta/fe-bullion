@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import NextImage from '../global/NextImage'
-import { isoToFullDateString } from '@/lib/helper'
+
 
 const StyledCalender = ({ value, onChange }) => {
   const [open, setOpen] = React.useState(false)
@@ -53,7 +53,6 @@ const StyledCalender = ({ value, onChange }) => {
 
             setDate(selectedDate)
             setOpen(false)
-
             // kirim ke parent sebagai ISO string
             onChange(selectedDate.toISOString())
           }}
