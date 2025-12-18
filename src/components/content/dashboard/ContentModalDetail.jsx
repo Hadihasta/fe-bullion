@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getDetailUser } from '@/services/adminService'
 
-
 const ContentModalDetail = (id) => {
   const [dataUser, setDataUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -9,17 +8,17 @@ const ContentModalDetail = (id) => {
   useEffect(() => {
     if (!id) return
 
-
     const inspectUser = async (id) => {
       try {
         const { id: userId } = id
-        console.log(id)
+        // console.log(id)
         const res = await getDetailUser(userId)
         setDataUser(res.data)
         setLoading(false)
-        
       } catch (error) {
-        console.log(error)
+        if (error) {
+          ToasterNotif('error', `${'Something Goes Wrong...'}`, '#ef4444')
+        }
       }
     }
     inspectUser(id)
@@ -82,7 +81,6 @@ const ContentModalDetail = (id) => {
           <div>{dataUser.address}</div>
         </div>
       </div>
-
     </div>
   )
 }

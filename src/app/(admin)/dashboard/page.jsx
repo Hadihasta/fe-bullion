@@ -40,7 +40,7 @@ const page = () => {
 
         const res = await fetchTableUser({ offset, limit: ITEMS_PER_PAGE })
         // console.log(res)
-          console.log(res.data)
+
         if (res?.data?.length) {
           setUsers(res.data)
         } else {

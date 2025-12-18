@@ -5,7 +5,17 @@ import StyledCalender from '@/components/form/StyledCalender'
 import StyledDropDown from '@/components/form/StyledDropDown'
 import StyledInputPassword from '@/components/form/StyledInputPassword'
 import { StyledUploudPhoto } from '@/components/form/StyledUploudPhoto'
-import { formatDateOfBirth, emailHelper, minLength, hashSHA256  } from '@/lib/helper'
+import { ToasterNotif } from '@/components/global/ToasterNotif'
+import {
+  formatDateOfBirth,
+  emailHelper,
+  minLength,
+  hashSHA256,
+  hasAlphabetAndNumber,
+  hasCapitalLetter,
+  maxFileSize,
+  isJpgOrJpeg,
+} from '@/lib/helper'
 import { editUser, getDetailUser } from '@/services/adminService'
 
 const initialState = {
@@ -39,7 +49,7 @@ const formReducer = (state, action) => {
           [action.name]: true,
         },
       }
-  case 'SET_INITIAL_VALUES':
+    case 'SET_INITIAL_VALUES':
       return {
         ...state,
         values: {
@@ -61,23 +71,24 @@ const formReducer = (state, action) => {
   }
 }
 
-const ContentModalEdit = ({id , onSubmit })  => {
+const ContentModalEdit = ({ id, onSubmit }) => {
   const [state, dispatch] = useReducer(formReducer, initialState)
   const [loading, setLoading] = useState(false)
+  const [isDisabled, setIsDisabled] = useState(false)
 
   const { values, errors, touched } = state
   useEffect(() => {
     // console.log(id, " first fire")
     if (!id) return
 
-    console.log(id)
+    // console.log(id)
 
     const inspectUser = async (data) => {
       try {
-        const  id  = data
+        const id = data
 
         const res = await getDetailUser(id)
-        console.log(res, ' <<<< fetch detail untuk initial state')
+        // console.log(res, ' <<<< fetch detail untuk initial state')
         const user = res.data
         dispatch({
           type: 'SET_INITIAL_VALUES',
@@ -94,8 +105,6 @@ const ContentModalEdit = ({id , onSubmit })  => {
             // confirmPassword: '',
           },
         })
-
-       
       } catch (error) {}
     }
 
@@ -105,29 +114,44 @@ const ContentModalEdit = ({id , onSubmit })  => {
   const validators = {
     first_name: (v) => (!v ? 'Nama depan wajib diisi' : ''),
     last_name: (v) => (!v ? 'Nama belakang wajib diisi' : ''),
+    gender: (v) => (!v ? 'Jenis Kelamin wajib diisi' : ''),
+    date_of_birth: (v) => (!v ? 'Tanggal Lahir Wajib diisi' : ''),
     email: (v) => {
       if (!v) return 'Email wajib diisi'
       if (!emailHelper(v)) return 'Format email tidak valid'
       return ''
     },
     phone: (v) => (!v ? 'No HP wajib diisi' : ''),
+    address: (v) => (!v ? 'Email wajib diisi' : ''),
+
     password: (v) => {
       if (!v) return 'Password wajib diisi'
       if (!minLength(v, 8)) return 'Minimal 8 karakter'
+      if (!hasAlphabetAndNumber(v)) return 'Harus Memiliki Huruf dan Angka'
+      if (!hasCapitalLetter(v)) return 'Harus Memiliki Huruf Kapital'
       return ''
     },
-    confirmPassword: (v, values) => (v !== values.password ? 'Password tidak sama' : ''),
+    confirmPassword: (v, values) => {
+      if (!v) return 'Confirm Password wajib diisi'
+      if (v !== values.password) return 'Password tidak sama'
+      return ''
+    },
+    photo: (v) => {
+      if (!v) return 'Photo wajib diisi'
+      if (!maxFileSize(v, 5)) return 'Maximal Size 5 MB'
+      if (!isJpgOrJpeg(v)) return 'Foto Harus JPG/JPEG'
+      return ''
+    },
   }
 
   const handleInput = (name, value) => {
-    // if(name === 'photo') {
-    //      dispatch({ type: 'CHANGE', name, value })
-    // }
-
-    console.log(name, value, ' <<<< here input parent')
+    // console.log(name, value, ' <<<< here input parent')
+    // setiap ada perubahan undisable
+    setIsDisabled(false)
     dispatch({ type: 'CHANGE', name, value })
 
     if (validators[name]) {
+      // console.log(validators[name])
       const error = validators[name](value, values)
       dispatch({ type: 'SET_ERROR', name, error })
     }
@@ -148,31 +172,57 @@ const ContentModalEdit = ({id , onSubmit })  => {
 
   const handleEditUser = async () => {
     try {
-      // kalau ada eror jangan lakukan apa apa
-      // if (validateSubmit()) return
-
       setLoading(true)
-    
+
+      // loop value jika ada erornya maka validator eror muncul
+      Object.entries(values).forEach(([key, value]) => {
+        handleInput(key, value)
+      })
+      // kalau ada eror jangan lakukan apa apa dan set jadi disable / undisable di input
+      if (validateSubmit()) {
+        setLoading(false)
+        setIsDisabled(true)
+        // console.log('fail schema')
+        return
+      }
+      // console.log('succes schema')
+
       const payload = {
         id,
         body: values,
       }
 
-      console.log('edit PAYLOAD:', payload)
+      // console.log('edit PAYLOAD:', payload)
 
-        const res = await editUser(payload)
-        console.log(res, " <<<< ")
-            if (res.status === 200) {
-                // close modal
-                onSubmit()
-            }
+      const res = await editUser(payload)
+      // console.log(res, ' <<<< ')
+      if (res.status === 200) {
+     ToasterNotif('succes', `${res.message === '' ? 'Successfully Logged In!' : res.message} `, '#22c55e')
+        // close modal
+        onSubmit()
+      }
 
       // console.log('REGISTER PAYLOAD:', state)
-
       // send to form handler later
-      // handleFormData()
       setLoading(false)
-    } catch (error) {}
+    } catch (error) {
+      if (error.response.status === 400) {
+        // console.log(errorMessage)
+        const errorMessage = error.response.data.err_message
+        ToasterNotif(
+          'error',
+          `${errorMessage === '' ? 'Something Goes Wrong...' : error.response.data.err_message}`,
+          '#ef4444'
+        )
+        setLoading(false)
+        return
+      }
+
+      if (error) {
+        ToasterNotif('error', `${'Something Goes Wrong Please Contact Administrator...'}`, '#ef4444')
+      }
+      setLoading(false)
+    }
   }
 
   return (
@@ -222,8 +272,12 @@ const ContentModalEdit = ({id , onSubmit })  => {
         <div className="w-full">
           <h3 className="input_label">{`Jenis Kelamin`}</h3>
           <div className="mt-3">
-            <StyledDropDown onChange={(val) => handleInput('gender', val)} value={values.gender} />
+            <StyledDropDown
+              onChange={(val) => handleInput('gender', val)}
+              value={values.gender}
+            />
           </div>
+          {touched.gender && errors.gender && <div className="warning_label animate-fade-in mt-2">{errors.gender}</div>}
         </div>
 
         {/* Date of Birth
@@ -232,7 +286,13 @@ const ContentModalEdit = ({id , onSubmit })  => {
         <div className="w-full">
           <h3 className="input_label">{`Tanggal Lahir`}</h3>
           <div className="mt-3">
-            <StyledCalender onChange={(val) => handleInput('date_of_birth', formatDateOfBirth(val))} value={values.date_of_birth} />
+            <StyledCalender
+              onChange={(val) => handleInput('date_of_birth', formatDateOfBirth(val))}
+              value={values.date_of_birth}
+            />
+            {touched.date_of_birth && errors.date_of_birth && (
+              <div className="warning_label animate-fade-in mt-2">{errors.date_of_birth}</div>
+            )}
           </div>
         </div>
       </div>
@@ -248,6 +308,7 @@ const ContentModalEdit = ({id , onSubmit })  => {
         value={values.email}
         onChange={(e) => handleInput('email', e.target.value)}
       />
+      {touched.email && errors.email && <div className="warning_label animate-fade-in mt-2">{errors.email}</div>}
 
       {/* Phone Number
         ○ Required */}
@@ -266,6 +327,7 @@ const ContentModalEdit = ({id , onSubmit })  => {
           }
         }}
       />
+      {touched.phone && errors.phone && <div className="warning_label animate-fade-in mt-2">{errors.phone}</div>}
 
       {/* Address
         ○ Required */}
@@ -277,6 +339,7 @@ const ContentModalEdit = ({id , onSubmit })  => {
         value={values.address}
         onChange={(e) => handleInput('address', e.target.value)}
       />
+      {touched.address && errors.address && <div className="warning_label animate-fade-in mt-2">{errors.address}</div>}
 
       {/* Password
         ○ Required
@@ -295,6 +358,9 @@ const ContentModalEdit = ({id , onSubmit })  => {
               value={values.password}
               onChange={(e) => handleInput('password', e.target.value)}
             />
+            {touched.password && errors.password && (
+              <div className="warning_label animate-fade-in mt-2">{errors.password}</div>
+            )}
           </div>
         </div>
 
@@ -309,6 +375,9 @@ const ContentModalEdit = ({id , onSubmit })  => {
               value={values.confirmPassword}
               onChange={(e) => handleInput('confirmPassword', e.target.value)}
             />
+            {touched.confirmPassword && errors.confirmPassword && (
+              <div className="warning_label animate-fade-in mt-2">{errors.confirmPassword}</div>
+            )}
           </div>
         </div>
       </div>
@@ -325,14 +394,15 @@ const ContentModalEdit = ({id , onSubmit })  => {
           value={values.photo}
           onChange={(val) => handleInput('photo', val)}
         />
+        {touched.photo && errors.photo && <div className="warning_label animate-fade-in mt-2">{errors.photo}</div>}
       </div>
 
       <ButtonStyled
         className="mt-5 "
         label="Simpan"
         onClick={handleEditUser}
-        // disableStatus={isDisabled}
-        // loading={loading}
+        disableStatus={isDisabled}
+        loading={loading}
       />
     </>
   )

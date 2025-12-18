@@ -34,7 +34,7 @@ const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange, 
       <div className="flex flex-col h-full justify-between">
         {/* table */}
         <table className="w-full border-collapse">
-          <thead className="bg-white text-sm text-gray-500 h-[63px]">
+          <thead className="bg-white text-sm text-black h-[63px]">
             <tr>
               <th className="px-6 py-4 text-left">Account ID</th>
               <th className="px-6 py-4 text-left">Name</th>
