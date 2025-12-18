@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { formatDate } from '@/lib/helper'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { getDetailUser, editUser } from '@/services/adminService'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import ContentModalEdit from './ContentModalEdit'
 import ContentModalDetail from './ContentModalDetail'
 import { Eye, SquarePen } from 'lucide-react'
 import NextImage from '@/components/global/NextImage'
+import SkeletonTable from './SkeletonTable'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange, onSuccess }) => {
   const [openDialog, setOpenDialog] = useState(false)
@@ -13,8 +14,6 @@ const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange, 
   const [selectedUser, setSelectedUser] = useState(null)
 
   
-
- 
   const handleOpen = (type, user) => {
     setDialogType(type)
     setSelectedUser(user)
@@ -22,7 +21,7 @@ const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange, 
   }
 
   if (loading) {
-    return <div className="p-6 text-gray-500">Loading data user...</div>
+    return <><SkeletonTable dataLength={users.length}/></>
   }
 
   if (!users.length) {

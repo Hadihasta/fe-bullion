@@ -56,7 +56,9 @@ const page = () => {
         setUsers(DUMMY_USERS.slice(start, end))
         setTotalPage(Math.ceil(DUMMY_USERS.length / ITEMS_PER_PAGE))
       } finally {
-        setLoading(false)
+        setTimeout(() => {
+          setLoading(false)
+        }, 1000);
       }
     }
 
