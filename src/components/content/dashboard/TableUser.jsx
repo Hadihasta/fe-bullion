@@ -128,7 +128,7 @@ const TableUser = ({ users = [], loading, currentPage, totalPage, onPageChange, 
         onOpenChange={setOpenDialog}
       >
         <DialogContent >
-          <DialogHeader className={`flex-space-beetween`}>
+          <DialogHeader className='flex-space-beetween'>
             <DialogTitle className={`modal_label `}>{dialogType === 'lihat' ? 'Lihat User' : 'Edit User'} </DialogTitle>
             <button onClick={()=>setOpenDialog(false)} className='cursor-pointer' >
                <NextImage

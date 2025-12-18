@@ -208,10 +208,11 @@ body {
   justify-content: start;
   align-items: center;
 }
+
 .flex-space-beetween{
-  display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
 }
 
 .flex-row-middle {
